@@ -44,26 +44,26 @@ const styles = StyleSheet.create({
   welcomeText: {
     fontSize: 90,
     fontFamily: "Georgia",
-    textShadowColor: "rgba(0, 0, 0, 0.75)",
-    textShadowOffset: { width: -1, height: 1 },
-    textShadowRadius: 10,
     textTransform: "uppercase",
     fontWeight: "bold",
     color: "white",
     textAlign: "center",
+    textShadowColor: "rgba(0, 0, 0, 0.75)",
+    textShadowOffset: { width: -1, height: 1 },
+    textShadowRadius: 10,
   },
 
   subtitleText: {
     fontSize: 30,
     fontFamily: "Verdana",
-    textShadowColor: "rgba(0, 0, 0, 0.75)",
-    textShadowOffset: { width: 3, height: 3 },
-    textShadowRadius: 3,
-    textTransform: "uppercase",
     fontWeight: "bold",
     color: "white",
     marginBottom: 20,
     textAlign: "center",
+    textShadowColor: "rgba(0, 0, 0, 0.75)",
+    textShadowOffset: { width: 3, height: 3 },
+    textShadowRadius: 3,
+    textTransform: "uppercase",
   },
 
   box: {
