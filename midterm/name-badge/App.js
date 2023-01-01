@@ -60,10 +60,10 @@ const styles = StyleSheet.create({
     color: "white",
     marginBottom: 20,
     textAlign: "center",
+    textTransform: "uppercase",
     textShadowColor: "rgba(0, 0, 0, 0.75)",
     textShadowOffset: { width: 3, height: 3 },
     textShadowRadius: 3,
-    textTransform: "uppercase",
   },
 
   box: {
