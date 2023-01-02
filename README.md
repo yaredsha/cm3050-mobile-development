@@ -5,3 +5,7 @@ CM3050 Mobile Development
 $ expo init --npm
 
 - when asked chose a blank tempate
+
+# Wireframes made by
+- https://www.figma.com/
+- login: google yaredsha
