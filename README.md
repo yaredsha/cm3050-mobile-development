@@ -6,6 +6,9 @@ $ expo init --npm
 
 - when asked chose a blank tempate
 
-# Wireframes made by
+# Wireframes built using
 - https://www.figma.com/
 - login: google yaredsha
+
+# flow diagram built using
+- https://app.diagrams.net/
