@@ -1,10 +1,18 @@
 import React, { useState } from "react";
 
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  Dimensions,
+  SafeAreaView,
+  TouchableOpacity,
+} from "react-native";
 
 export default function App() {
-  const [calculator, setCalculator] = useState({ operand1: 0.0 });
+  const [calculator, setCalculator] = useState({ input: 0.0 });
 
   const print = () => {
     console.log(calculator);
@@ -12,48 +20,80 @@ export default function App() {
 
   const reset = () => {
     const calculatorUpdated = {
-      operand1: 0.0,
+      operand1: undefined,
       operand2: undefined,
       operator: undefined,
-      result: undefined,
+      input: 0.0,
     };
 
     update(calculatorUpdated);
   };
 
-  const onOperatorClicked = (operator, operand1) => {
+  const onInputChange = (value) => {
     const calculatorUpdated = { ...calculator };
-    calculatorUpdated.operand1 = operand1;
+    calculatorUpdated.input = !value || isNaN(value) ? 0.0 : parseFloat(value);
+    update(calculatorUpdated);
+  };
+
+  const onOperatorClicked = (operator) => {
+    const calculatorUpdated = { ...calculator };
+    calculatorUpdated.operand1 = calculatorUpdated.input;
     calculatorUpdated.operator = operator;
 
     update(calculatorUpdated);
   };
 
-  const onEqualsClicked = (operand2) => {
+  const onPercentageClicked = () => {
+    const calculatorUpdated = { ...calculator };
+    const per = calculatorUpdated.input / 100;
+
+    if (calculatorUpdated.operator != undefined) {
+      const value = calculatorUpdated.operand1 * per;
+      calculatorUpdated.operand2 = value;
+      calculatorUpdated.input = value;
+    } else {
+      calculatorUpdated.input = per;
+    }
+
+    update(calculatorUpdated);
+  };
+
+  const onEqualsClicked = () => {
     const calculatorUpdated = { ...calculator };
 
     if (calculatorUpdated.operator != undefined) {
-      calculatorUpdated.operand2 = operand2;
+      if (calculatorUpdated.operand2 === undefined) {
+        calculatorUpdated.operand2 = calculatorUpdated.input;
+      }
 
-      const { operand1, operator } = calculatorUpdated;
+      const { operand1, operator, operand2 } = calculatorUpdated;
+
+      let result = calculatorUpdated.input;
 
       switch (operator) {
         case "+":
-          calculatorUpdated.result = operand1 + operand2;
+          result = operand1 + operand2;
           break;
         case "-":
-          calculatorUpdated.result = operand1 - operand2;
+          result = operand1 - operand2;
           break;
         case "x":
-          calculatorUpdated.result = operand1 * operand2;
+          result = operand1 * operand2;
           break;
         case "/":
           if (operand2 == 0) {
-            // TODO throw error
-            console.log("can't divide with 0");
+            result = "Error";
+          } else {
+            result = operand1 / operand2;
           }
-          calculatorUpdated.result = operand1 / operand2;
+
           break;
+      }
+
+      calculatorUpdated.input = result;
+
+      if (!isNaN(result)) {
+        calculatorUpdated.operand1 = result;
       }
 
       update(calculatorUpdated);
@@ -69,40 +109,53 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => print()}>
-        <Text style={styles.text}>print</Text>
-      </TouchableOpacity>
+      <SafeAreaView style={styles.container}>
+        <TextInput
+          keyboardType="numeric"
+          returnKeyType="done"
+          style={styles.inputText}
+          onChangeText={(value) => onInputChange(value)}
+          value={calculator.input.toString()}
+        ></TextInput>
 
-      <TouchableOpacity onPress={() => reset()}>
-        <Text style={styles.text}>reset</Text>
-      </TouchableOpacity>
+        <TouchableOpacity onPress={() => print()}>
+          <Text style={styles.text}>print</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => onOperatorClicked("+", 8)}>
-        <Text style={styles.text}>click 8+</Text>
-      </TouchableOpacity>
+        <TouchableOpacity onPress={() => reset()}>
+          <Text style={styles.text}>reset</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => onOperatorClicked("-", 8)}>
-        <Text style={styles.text}>click 8-</Text>
-      </TouchableOpacity>
+        <TouchableOpacity onPress={() => onOperatorClicked("+")}>
+          <Text style={styles.text}> + </Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => onOperatorClicked("x", 8)}>
-        <Text style={styles.text}>click 8x</Text>
-      </TouchableOpacity>
+        <TouchableOpacity onPress={() => onOperatorClicked("-")}>
+          <Text style={styles.text}> - </Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => onOperatorClicked("/", 8)}>
-        <Text style={styles.text}>click 8 / </Text>
-      </TouchableOpacity>
+        <TouchableOpacity onPress={() => onOperatorClicked("x")}>
+          <Text style={styles.text}> x </Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => onEqualsClicked(6)}>
-        <Text style={styles.text}>onEqualsClicked</Text>
-      </TouchableOpacity>
+        <TouchableOpacity onPress={() => onOperatorClicked("/")}>
+          <Text style={styles.text}> / </Text>
+        </TouchableOpacity>
 
-      <Text style={styles.text}>
-        {calculator.operand1} {calculator.operator} {calculator.operand2}
-      </Text>
-      <Text style={styles.text}>Result: {calculator.result}</Text>
+        <TouchableOpacity onPress={() => onPercentageClicked()}>
+          <Text style={styles.text}> % </Text>
+        </TouchableOpacity>
 
-      <StatusBar style="auto" />
+        <TouchableOpacity onPress={() => onEqualsClicked()}>
+          <Text style={styles.text}> = </Text>
+        </TouchableOpacity>
+
+        <Text style={styles.text}>
+          {calculator.operand1} {calculator.operator} {calculator.operand2}
+        </Text>
+
+        <StatusBar style="light" />
+      </SafeAreaView>
     </View>
   );
 }
@@ -110,12 +163,28 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#000",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-end",
   },
 
   text: {
     fontSize: 20,
+    color: "#fff",
+    lineHeight: 50,
+    borderWidth: 1,
+    borderColor: "#fff",
+    minWidth: 50,
+    margin: 3,
+    textAlign: "center",
+  },
+
+  inputText: {
+    color: "#fff",
+    borderWidth: 1,
+    borderColor: "#fff",
+    minWidth: 200,
+    fontSize: 40,
+    margin: 30,
   },
 });
