@@ -12,11 +12,10 @@ import {
 } from "react-native";
 
 export default function App() {
-  const [calculator, setCalculator] = useState({ input: 0.0 });
+  const windowWidth = Dimensions.get("window").width;
+  const buttonWidth = windowWidth / 4.8;
 
-  const print = () => {
-    console.log(calculator);
-  };
+  const [calculator, setCalculator] = useState({ input: 32 });
 
   const reset = () => {
     const calculatorUpdated = {
@@ -109,56 +108,103 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <SafeAreaView style={styles.container}>
-        <TextInput
-          keyboardType="numeric"
-          returnKeyType="done"
-          style={styles.inputText}
+      <SafeAreaView style={[styles.container, styles.safeArea]}>
+        <Text
+          style={styles.resultField}
           onChangeText={(value) => onInputChange(value)}
-          value={calculator.input.toString()}
-        ></TextInput>
-
-        <TouchableOpacity onPress={() => print()}>
-          <Text style={styles.text}>print</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => reset()}>
-          <Text style={styles.text}>reset</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => onOperatorClicked("+")}>
-          <Text style={styles.text}> + </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => onOperatorClicked("-")}>
-          <Text style={styles.text}> - </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => onOperatorClicked("x")}>
-          <Text style={styles.text}> x </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => onOperatorClicked("/")}>
-          <Text style={styles.text}> / </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => onPercentageClicked()}>
-          <Text style={styles.text}> % </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => onEqualsClicked()}>
-          <Text style={styles.text}> = </Text>
-        </TouchableOpacity>
-
-        <Text style={styles.text}>
-          {calculator.operand1} {calculator.operator} {calculator.operand2}
+        >
+          {calculator.input.toString()}
         </Text>
+
+        {/* row #1 */}
+        <View style={styles.row}>
+          <TouchableOpacity style={styles.button(1, buttonWidth)}>
+            <Text style={styles.blackText}>C</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button(1, buttonWidth)}>
+            <Text style={styles.blackText}>+/-</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button(1, buttonWidth)}>
+            <Text style={styles.blackText}>%</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button(2, buttonWidth)}>
+            <Text style={styles.whiteText}>/</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* row #2 */}
+        <View style={styles.row}>
+          <TouchableOpacity style={styles.button(0, buttonWidth)}>
+            <Text style={styles.whiteText}>7</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button(0, buttonWidth)}>
+            <Text style={styles.whiteText}>8</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button(0, buttonWidth)}>
+            <Text style={styles.whiteText}>9</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button(2, buttonWidth)}>
+            <Text style={styles.whiteText}>x</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* row #3 */}
+        <View style={styles.row}>
+          <TouchableOpacity style={styles.button(0, buttonWidth)}>
+            <Text style={styles.whiteText}>4</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button(0, buttonWidth)}>
+            <Text style={styles.whiteText}>5</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button(0, buttonWidth)}>
+            <Text style={styles.whiteText}>6</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button(2, buttonWidth)}>
+            <Text style={styles.whiteText}>-</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* row #4 */}
+        <View style={styles.row}>
+          <TouchableOpacity style={styles.button(0, buttonWidth)}>
+            <Text style={styles.whiteText}>1</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button(0, buttonWidth)}>
+            <Text style={styles.whiteText}>2</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button(0, buttonWidth)}>
+            <Text style={styles.whiteText}>3</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button(2, buttonWidth)}>
+            <Text style={styles.whiteText}>+</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* row #5 */}
+        <View style={styles.row}>
+          <TouchableOpacity style={styles.button(3, buttonWidth)}>
+            <Text style={styles.whiteText}>0</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.button(0, buttonWidth)}>
+            <Text style={styles.whiteText}>.</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button(2, buttonWidth)}>
+            <Text style={styles.whiteText}>=</Text>
+          </TouchableOpacity>
+        </View>
 
         <StatusBar style="light" />
       </SafeAreaView>
     </View>
   );
 }
+
+const baseText = {
+  fontSize: "30%",
+  fontWeight: "500",
+  textAlign: "center",
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -168,23 +214,44 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
 
-  text: {
-    fontSize: 20,
-    color: "#fff",
-    lineHeight: 50,
-    borderWidth: 1,
-    borderColor: "#fff",
-    minWidth: 50,
-    margin: 3,
-    textAlign: "center",
+  safeArea: {
+    margin: 20,
   },
 
-  inputText: {
+  resultField: {
+    fontSize: "70%",
     color: "#fff",
-    borderWidth: 1,
     borderColor: "#fff",
-    minWidth: 200,
-    fontSize: 40,
-    margin: 30,
+    minWidth: "100%",
+    textAlign: "right",
+  },
+
+  row: {
+    flexDirection: "row",
+  },
+
+  button: (type, width) => {
+    const bgColor = type == 1 ? "#A6A6A6" : type == 2 ? "#0984E3" : "#333333";
+    const w = type == 3 ? width * 2 : width;
+
+    return {
+      width: w,
+      height: width,
+      borderRadius: width / 2,
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: bgColor,
+      margin: 5,
+    };
+  },
+
+  whiteText: {
+    color: "#fff",
+    ...baseText,
+  },
+
+  blackText: {
+    color: "#000",
+    ...baseText,
   },
 });
