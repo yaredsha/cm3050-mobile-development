@@ -12,11 +12,86 @@ import {
 
 export default function App() {
   const windowWidth = Dimensions.get("window").width;
-  const buttonWidth = windowWidth / 4.8;
+  const buttonWidth = windowWidth * 0.21;
 
-  const [calculator, setCalculator] = useState({ inputStr: "0" });
+  const [answerValue, setAnswerValue] = useState(0);
+  const [readyToReplace, setReadyToReplace] = useState(false);
+  const [memoryValue, setMemoryValue] = useState();
+  const [operatorValue, setOperatorValue] = useState();
 
-  const reset = () => {
+  const operators = ["+", "-", "x", "/"];
+
+  const buttonPressed = (value) => {
+    console.log(isNumeric(value), operatorValue, operatorValue != 0);
+
+    if (operatorValue !== undefined && operatorValue != 0) {
+      const result = calculateEquals();
+      setMemoryValue(result);
+    } else if (isNumeric(value)) {
+      const result = handleNumber(value);
+      setAnswerValue(result);
+    } else if (value == "C") {
+      setAnswerValue(0);
+      setMemoryValue(0);
+      setOperatorValue(0);
+      setReadyToReplace(true);
+    } else if (operators.includes(value)) {
+      setMemoryValue(answerValue);
+      setReadyToReplace(true);
+      setOperatorValue(value);
+    } else if (value == "=") {
+      calculateEquals();
+      setMemoryValue(0);
+      setReadyToReplace(true);
+    } else if (value == "+/-") {
+      setAnswerValue(answerValue * -1);
+    } else if (value == "%") {
+      setAnswerValue(answerValue * 0.01);
+    }
+  };
+
+  const isNumeric = (value) => {
+    if (typeof value != "string") return false;
+    return !isNaN(value) && !isNaN(parseFloat(value));
+  };
+
+  const handleNumber = (value) => {
+    if (readyToReplace === true) {
+      return value;
+    } else {
+      return parseFloat("" + answerValue + "" + value);
+    }
+  };
+
+  const calculateEquals = () => {
+    let previous = parseFloat(memoryValue);
+    let current = parseFloat(answerValue);
+    let result = undefined;
+
+    switch (operatorValue) {
+      case "+":
+        result = previous + current;
+        break;
+      case "-":
+        result = previous - current;
+        break;
+      case "x":
+        result = previous * current;
+        break;
+      case "/":
+        result = previous / current;
+        break;
+    }
+
+    if (result !== undefined) {
+      setAnswerValue(result);
+      return result;
+    }
+  };
+
+  //const [calculator, setCalculator] = useState({ inputStr: "0" });
+
+  /*const reset = () => {
     const calculatorUpdated = {
       operand1: undefined,
       operand2: undefined,
@@ -155,6 +230,7 @@ export default function App() {
       ...calculatorUpdated,
     }));
   };
+  */
 
   const renderRow = (row) => {
     return row.map((item) => {
@@ -162,7 +238,7 @@ export default function App() {
         <TouchableOpacity
           key={item.value}
           style={styles.button(item.type, buttonWidth)}
-          onPress={() => onButtonClick(item)}
+          onPress={() => buttonPressed(item.value)}
         >
           <Text style={item.type == 1 ? styles.blackText : styles.whiteText}>
             {item.value}
@@ -209,7 +285,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       <SafeAreaView style={[styles.container, styles.safeArea]}>
-        <Text style={styles.resultField}>{calculator.inputStr}</Text>
+        <Text style={styles.resultField}>{answerValue}</Text>
 
         <View style={styles.row}>{renderRow(row1)}</View>
 
@@ -229,7 +305,6 @@ export default function App() {
 
 const baseText = {
   fontSize: "30%",
-  fontWeight: "500",
   textAlign: "center",
 };
 
