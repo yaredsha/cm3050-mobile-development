@@ -23,7 +23,7 @@ export default function App() {
   const OPERATORS_MULT_DIV = ["x", "/"];
 
   const SIGN = "+/-";
-  const C = "C";
+  const CLEAR = "C";
   const PERCENT = "%";
   const EQUALS = "=";
 
@@ -36,6 +36,13 @@ export default function App() {
     TRAILING_COLLECT: 5,
   };
 
+  const STATES = {
+    INITIAL: "INITIAL",
+    COLLECTING: "COLLECTING",
+    OPERATOR: "OPERATOR",
+    EQUALS: "EQUALS",
+  };
+
   const TRANSITION = {
     DIGITS: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "."],
     OPERATORS: ["+", "-", "x", "/"],
@@ -46,13 +53,12 @@ export default function App() {
   };
 
   const contextNew = {
-    operand1: [0],
-    operator1: "",
-    operand2: [],
-    operator2: "",
-    trailing: [],
+    operands: [],
+    operators: [],
     stringValue: 0,
-    state: STATE.INITIAL,
+    lastOperand: undefined,
+    lastOperator: undefined,
+    state: STATES.INITIAL,
   };
 
   const [context, setContext] = useState(contextNew);
@@ -66,6 +72,142 @@ export default function App() {
   };
 
   const onButtonPressed = (value) => {
+    const ctx = { ...context };
+
+    if (DIGITS.includes(value)) {
+      if (
+        ctx.state == STATES.INITIAL ||
+        ctx.state == STATES.OPERATOR ||
+        ctx.state == STATES.EQUALS
+      ) {
+        const operand = value == "." ? "0." : value;
+        ctx.operands.push(operand);
+        ctx.stringValue = operand;
+        ctx.state = STATES.COLLECTING;
+      } else {
+        //COLLECTING
+        const idx = ctx.operands.length - 1;
+        const oldValue = ctx.operands[idx];
+
+        if (value != "." || !oldValue.includes(".")) {
+          const operand = oldValue + "" + value;
+          ctx.operands[idx] = operand;
+          ctx.stringValue = operand;
+        }
+      }
+    } else if (OPERATORS.includes(value)) {
+      if (ctx.state == STATES.OPERATOR && ctx.operators.length > 0) {
+        const idx = ctx.operators.length - 1;
+        ctx.operators[idx] = value;
+      } else {
+        ctx.operators.push(value);
+      }
+      ctx.state = STATES.OPERATOR;
+      evaluateSign(ctx, value);
+    } else if (value == EQUALS) {
+      const newCtx = evaluateEquals(ctx, value);
+      newCtx.state = STATES.EQUALS;
+      updateState(newCtx);
+      return;
+    } else if (value == CLEAR) {
+      updateState(contextNew);
+      return;
+    } else if (value == SIGN) {
+      if (ctx.operands.length > 0) {
+        const idx = ctx.operands.length - 1;
+        const operand = String(-1 * parseFloat(ctx.operands[idx]));
+        ctx.operands[idx] = operand;
+        ctx.stringValue = operand;
+      }
+    }
+
+    updateState(ctx);
+
+    /*switch (ctx.state) {
+      case STATES.INITIAL:
+        break;
+      case STATES.COLLECTING:
+        break;
+      case STATES.OPERATOR:
+        break;
+      case STATES.EQUALS:
+        break;
+    }
+    */
+  };
+
+  const mergeArraysAlternating = ([x, ...xs], ...rest) => {
+    // credit: https://stackoverflow.com/questions/47061160/merge-two-arrays-with-alternating-values
+    return x === undefined
+      ? rest.length === 0
+        ? []
+        : mergeArraysAlternating(...rest)
+      : [x, ...mergeArraysAlternating(...rest, xs)];
+  };
+
+  const evaluateEquals = (ctx, value) => {
+    if (
+      ctx.lastOperand &&
+      ctx.lastOperator &&
+      ctx.operands.length > 0 &&
+      ctx.state == STATES.EQUALS
+    ) {
+      const equation =
+        ctx.operands[0] + ctx.lastOperator + "(" + ctx.lastOperand + ")";
+      console.log("equation: ", equation);
+      ctx.operands[0] = parseFloat(
+        eval(equation.replaceAll("x", "*")).toPrecision(12)
+      );
+      ctx.stringValue = String(ctx.operands[0]);
+    } else if (ctx.operators.length > 0) {
+      const newCtx = { ...contextNew };
+      newCtx.lastOperand = ctx.operands.slice(-1)[0];
+      newCtx.lastOperator = ctx.operators.slice(-1)[0];
+      newCtx.operands[0] = calculate(ctx);
+      newCtx.stringValue = String(newCtx.operands[0]);
+      return newCtx;
+    }
+
+    return ctx;
+  };
+
+  const evaluateSign = (ctx, value) => {
+    if (ctx.operands.length < 2 || ctx.operators.length == 0) {
+      return;
+    }
+
+    if (OPERATORS_MULT_DIV.includes(value)) {
+      const found = ctx.operators.find((opr) =>
+        OPERATORS_ADD_SUB.includes(opr)
+      );
+      if (found) {
+        //wait
+        return;
+      }
+    }
+
+    ctx.stringValue = calculate(ctx);
+  };
+
+  const calculate = (ctx) => {
+    const operands = ctx.operands.map((op) => "(" + op + ")");
+    const merged = mergeArraysAlternating(operands, ctx.operators);
+
+    //last element can't be an operator
+    const lastElement = merged.pop();
+    if (!OPERATORS.includes(lastElement)) {
+      merged.push(lastElement);
+    }
+
+    const equation = merged.join("").replaceAll("x", "*");
+    const result = parseFloat(eval(equation).toPrecision(12));
+
+    console.log("merged: ", merged, "equation: ", equation, "result: ", result);
+
+    return result;
+  };
+
+  const onButtonPressedOld = (value) => {
     const ctx = { ...context };
 
     // operation independent of states
