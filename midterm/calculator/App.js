@@ -123,16 +123,26 @@ export default function App() {
 
   const handlePercentage = (ctx) => {
     const len = ctx.operands.length;
-    const from = len > 1 ? ctx.operands[len - 2] : 1;
-    if (len > 0) {
-      const percentage = ctx.operands.pop();
-      const result = (percentage / 100) * from;
+    let from = len > 1 ? ctx.operands[len - 2] : undefined;
 
-      console.log(
-        "from: " + from,
-        "percentage: " + percentage,
-        "result: " + result
-      );
+    console.log("len: ", len, "from", from);
+
+    if (from && from < 0) {
+      from = -1 * from;
+    }
+
+    if (len > 0) {
+      const percentagePoint = ctx.operands.pop();
+
+      let result = percentagePoint / 100;
+
+      if (from && ctx.operators.length > 0) {
+        const lastOperator = ctx.operators.slice(-1)[0];
+        if (OPERATORS_ADD_SUB.includes(lastOperator)) {
+          result = from * result;
+        }
+      }
+
       ctx.operands.push(result);
       ctx.stringValue = String(result);
     }
@@ -209,12 +219,24 @@ export default function App() {
     return result;
   };
 
+  const isOperatorSelected = (value) => {
+    return (
+      context.state == STATES.OPERATOR &&
+      context.operators.length > 0 &&
+      value == context.operators.slice(-1)[0]
+    );
+  };
+
   const renderRow = (row) => {
     return row.map((item) => {
       return (
         <TouchableOpacity
           key={item.value}
-          style={styles.button(item.type, buttonWidth)}
+          style={styles.button(
+            item.type,
+            buttonWidth,
+            isOperatorSelected(item.value)
+          )}
           onPress={() => onButtonPressed(item.value)}
         >
           <Text style={item.type == 1 ? styles.blackText : styles.whiteText}>
@@ -310,9 +332,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
 
-  button: (type, width) => {
+  button: (type, width, isSelected) => {
     const bgColor = type == 1 ? "#A6A6A6" : type == 2 ? "#0984E3" : "#333333";
     const w = type == 3 ? width * 2 : width;
+    const borderWidth = isSelected ? 1 : 0;
 
     return {
       width: w,
@@ -321,6 +344,8 @@ const styles = StyleSheet.create({
       justifyContent: "center",
       alignItems: "center",
       backgroundColor: bgColor,
+      borderWidth: borderWidth,
+      borderColor: "#fff",
       margin: 5,
     };
   },
