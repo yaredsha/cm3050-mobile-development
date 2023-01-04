@@ -43,6 +43,40 @@ export default function App() {
     EQUALS: "=",
   };
 
+  const row1 = [
+    { type: 1, value: "C" },
+    { type: 1, value: "+/-" },
+    { type: 1, value: "%" },
+    { type: 2, value: "/" },
+  ];
+
+  const row2 = [
+    { type: 0, value: "7" },
+    { type: 0, value: "8" },
+    { type: 0, value: "9" },
+    { type: 2, value: "x" },
+  ];
+
+  const row3 = [
+    { type: 0, value: "4" },
+    { type: 0, value: "5" },
+    { type: 0, value: "6" },
+    { type: 2, value: "-" },
+  ];
+
+  const row4 = [
+    { type: 0, value: "1" },
+    { type: 0, value: "2" },
+    { type: 0, value: "3" },
+    { type: 2, value: "+" },
+  ];
+
+  const row5 = [
+    { type: 3, value: "0" },
+    { type: 0, value: "." },
+    { type: 2, value: "=" },
+  ];
+
   const contextNew = {
     operands: [],
     operators: [],
@@ -62,7 +96,7 @@ export default function App() {
     }));
   };
 
-  const onButtonPressed = (value) => {
+  const buttonPressed = (value) => {
     const ctx = { ...context };
 
     if (DIGITS.includes(value)) {
@@ -228,7 +262,7 @@ export default function App() {
             buttonWidth,
             isOperatorSelected(item.value)
           )}
-          onPress={() => onButtonPressed(item.value)}
+          onPress={() => buttonPressed(item.value)}
         >
           <Text style={item.type == 1 ? styles.blackText : styles.whiteText}>
             {item.value}
@@ -237,40 +271,6 @@ export default function App() {
       );
     });
   };
-
-  const row1 = [
-    { type: 1, value: "C" },
-    { type: 1, value: "+/-" },
-    { type: 1, value: "%" },
-    { type: 2, value: "/" },
-  ];
-
-  const row2 = [
-    { type: 0, value: "7" },
-    { type: 0, value: "8" },
-    { type: 0, value: "9" },
-    { type: 2, value: "x" },
-  ];
-
-  const row3 = [
-    { type: 0, value: "4" },
-    { type: 0, value: "5" },
-    { type: 0, value: "6" },
-    { type: 2, value: "-" },
-  ];
-
-  const row4 = [
-    { type: 0, value: "1" },
-    { type: 0, value: "2" },
-    { type: 0, value: "3" },
-    { type: 2, value: "+" },
-  ];
-
-  const row5 = [
-    { type: 3, value: "0" },
-    { type: 0, value: "." },
-    { type: 2, value: "=" },
-  ];
 
   return (
     <View style={styles.container}>
