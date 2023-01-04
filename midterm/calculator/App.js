@@ -127,10 +127,6 @@ export default function App() {
 
     console.log("len: ", len, "from", from);
 
-    if (from && from < 0) {
-      from = -1 * from;
-    }
-
     if (len > 0) {
       const percentagePoint = ctx.operands.pop();
 
