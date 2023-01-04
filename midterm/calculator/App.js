@@ -27,15 +27,6 @@ export default function App() {
   const PERCENT = "%";
   const EQUALS = "=";
 
-  const STATE = {
-    INITIAL: 0,
-    FIRST_COLLECT: 1,
-    FIRST_OPERATOR: 2,
-    SECOND_COLLECT: 3,
-    SECOND_OPERATOR: 4,
-    TRAILING_COLLECT: 5,
-  };
-
   const STATES = {
     INITIAL: "INITIAL",
     COLLECTING: "COLLECTING",
@@ -94,46 +85,57 @@ export default function App() {
           ctx.operands[idx] = operand;
           ctx.stringValue = operand;
         }
+
+        ctx.state = STATES.COLLECTING;
       }
     } else if (OPERATORS.includes(value)) {
       if (ctx.state == STATES.OPERATOR && ctx.operators.length > 0) {
-        const idx = ctx.operators.length - 1;
-        ctx.operators[idx] = value;
-      } else {
+        // change operator
+        ctx.operators.pop();
         ctx.operators.push(value);
+        ctx.state = STATES.OPERATOR;
+        handleSign(ctx, value);
+      } else if (ctx.state != STATES.INITIAL) {
+        ctx.operators.push(value);
+        ctx.state = STATES.OPERATOR;
+        handleSign(ctx, value);
       }
-      ctx.state = STATES.OPERATOR;
-      evaluateSign(ctx, value);
     } else if (value == EQUALS) {
-      const newCtx = evaluateEquals(ctx, value);
+      const newCtx = handleEquals(ctx);
       newCtx.state = STATES.EQUALS;
       updateState(newCtx);
       return;
+    } else if (value == PERCENT) {
+      handlePercentage(ctx);
     } else if (value == CLEAR) {
       updateState(contextNew);
       return;
     } else if (value == SIGN) {
       if (ctx.operands.length > 0) {
-        const idx = ctx.operands.length - 1;
-        const operand = String(-1 * parseFloat(ctx.operands[idx]));
-        ctx.operands[idx] = operand;
+        const operand = String(-1 * parseFloat(ctx.operands.pop()));
+        ctx.operands.push(operand);
         ctx.stringValue = operand;
       }
     }
 
     updateState(ctx);
+  };
 
-    /*switch (ctx.state) {
-      case STATES.INITIAL:
-        break;
-      case STATES.COLLECTING:
-        break;
-      case STATES.OPERATOR:
-        break;
-      case STATES.EQUALS:
-        break;
+  const handlePercentage = (ctx) => {
+    const len = ctx.operands.length;
+    const from = len > 1 ? ctx.operands[len - 2] : 1;
+    if (len > 0) {
+      const percentage = ctx.operands.pop();
+      const result = (percentage / 100) * from;
+
+      console.log(
+        "from: " + from,
+        "percentage: " + percentage,
+        "result: " + result
+      );
+      ctx.operands.push(result);
+      ctx.stringValue = String(result);
     }
-    */
   };
 
   const mergeArraysAlternating = ([x, ...xs], ...rest) => {
@@ -145,12 +147,12 @@ export default function App() {
       : [x, ...mergeArraysAlternating(...rest, xs)];
   };
 
-  const evaluateEquals = (ctx, value) => {
+  const handleEquals = (ctx) => {
     if (
+      ctx.state == STATES.EQUALS &&
       ctx.lastOperand &&
       ctx.lastOperator &&
-      ctx.operands.length > 0 &&
-      ctx.state == STATES.EQUALS
+      ctx.operands.length > 0
     ) {
       const equation =
         ctx.operands[0] + ctx.lastOperator + "(" + ctx.lastOperand + ")";
@@ -171,7 +173,7 @@ export default function App() {
     return ctx;
   };
 
-  const evaluateSign = (ctx, value) => {
+  const handleSign = (ctx, value) => {
     if (ctx.operands.length < 2 || ctx.operators.length == 0) {
       return;
     }
@@ -205,246 +207,6 @@ export default function App() {
     console.log("merged: ", merged, "equation: ", equation, "result: ", result);
 
     return result;
-  };
-
-  const onButtonPressedOld = (value) => {
-    const ctx = { ...context };
-
-    // operation independent of states
-    if (TRANSITION.C == value) {
-      updateState(contextNew);
-    } else if (EQUALS == value) {
-      let ctxNew = handleEquals(ctx, value);
-      updateState(ctxNew);
-    } else {
-      // transitions (state relevant)
-
-      let ctxNew = undefined;
-
-      switch (ctx.state) {
-        case STATE.INITIAL:
-        case STATE.FIRST_COLLECT:
-          if (TRANSITION.DIGITS.includes(value)) {
-            ctxNew = firstCollect(ctx, value);
-            ctxNew.state = STATE.FIRST_COLLECT;
-          } else if (TRANSITION.OPERATORS.includes(value)) {
-            ctxNew = handleFirstOperator(ctx, value);
-            ctxNew.state = STATE.FIRST_OPERATOR;
-          } else if (TRANSITION.SIGN == value) {
-            ctxNew = handleSignFirstCollect(ctx);
-          }
-          break;
-        case STATE.FIRST_OPERATOR:
-          // changing the operator
-          if (TRANSITION.OPERATORS.includes(value)) {
-            ctxNew = handleFirstOperator(ctx, value);
-            ctxNew.state = STATE.FIRST_OPERATOR;
-            break;
-          } else if (TRANSITION.SIGN == value) {
-            ctxNew = handleSignFirstCollect(ctx);
-            break;
-          }
-        case STATE.SECOND_COLLECT:
-          if (TRANSITION.DIGITS.includes(value)) {
-            ctxNew = secondCollect(ctx, value);
-            ctxNew.state = STATE.SECOND_COLLECT;
-          } else if (TRANSITION.OPERATORS.includes(value)) {
-            ctxNew = handleSecondOperator(ctx, value);
-            ctxNew.state = STATE.SECOND_OPERATOR;
-          } else if (TRANSITION.SIGN == value) {
-            ctxNew = handleSignSecondCollect(ctx);
-          }
-          break;
-        case STATE.SECOND_OPERATOR:
-          // changing the operator
-          if (TRANSITION.OPERATORS.includes(value)) {
-            ctxNew = handleSecondOperator(ctx, value);
-            ctxNew.state = STATE.SECOND_OPERATOR;
-            break;
-          } else if (TRANSITION.SIGN == value) {
-            ctxNew = handleSignSecondCollect(ctx);
-            break;
-          }
-        case STATE.TRAILING_COLLECT:
-          if (TRANSITION.DIGITS.includes(value)) {
-            ctxNew = trailingCollect(ctx, value);
-            ctxNew.state = STATE.TRAILING_COLLECT;
-          } else if (TRANSITION.OPERATORS.includes(value)) {
-            ctxNew = handleTrailingOperator(ctx, value);
-            break;
-          } else if (TRANSITION.SIGN == value) {
-            ctxNew = handleSignTrailingCollect(ctx);
-          }
-          break;
-      }
-
-      if (ctxNew) {
-        updateState(ctxNew);
-      }
-    }
-
-    /*if (DIGITS.includes(value)) {
-      if (ctx.state <= STATE.FIRST_COLLECT) {
-        firstCollect(value);
-      } else if (ctx.state <= STATE.SECOND_COLLECT) {
-        secondCollect(value);
-      } else if (ctx.state <= STATE.TRAILING_COLLECT) {
-        trailingCollect(value);
-      }
-
-      return;
-    } else if (OPERATORS.includes(value)) {
-      handleOperators(value);
-      return;
-    } else if (SIGN == value) {
-      handleSign();
-      return;
-    } else if (C == value) {
-      reset();
-      return;
-    } else if (PERCENT == value) {
-    } else if (EQUALS == value) {
-      handleEquals(value);
-      return;
-    }*/
-  };
-
-  const firstCollect = (ctx, value) => {
-    if (ctx.state == STATE.INITIAL) {
-      ctx.operand1[0] = value == "." ? "0." : value;
-    } else {
-      if (value != "." || !ctx.operand1.join("").includes(".")) {
-        ctx.operand1.push(value);
-      }
-    }
-
-    ctx.stringValue = ctx.operand1.join("");
-
-    return ctx;
-  };
-
-  const secondCollect = (ctx, value) => {
-    if (ctx.state == STATE.FIRST_OPERATOR) {
-      ctx.operand2[0] = value == "." ? "0." : value;
-    } else {
-      if (value != "." || !ctx.operand2.join("").includes(".")) {
-        ctx.operand2.push(value);
-      }
-    }
-
-    ctx.stringValue = ctx.operand2.join("");
-
-    return ctx;
-  };
-
-  const trailingCollect = (ctx, value) => {
-    if (ctx.state == STATE.SECOND_OPERATOR) {
-      ctx.trailing[0] = value == "." ? "0." : value;
-    } else {
-      if (value != "." || !ctx.trailing.join("").includes(".")) {
-        ctx.trailing.push(value);
-      }
-    }
-
-    ctx.stringValue = ctx.trailing.join("");
-
-    return ctx;
-  };
-
-  const handleFirstOperator = (ctx, value) => {
-    if (ctx.state != STATE.INITIAL) {
-      ctx.operator1 = value;
-    }
-
-    return ctx;
-  };
-
-  const handleSecondOperator = (ctx, value) => {
-    ctx.operator2 = value;
-
-    if (
-      OPERATORS_MULT_DIV.includes(value) &&
-      OPERATORS_ADD_SUB.includes(ctx.operator1)
-    ) {
-      //wait
-      return ctx;
-    }
-
-    return handleEquals(ctx, value);
-  };
-
-  const handleTrailingOperator = (ctx, value) => {
-    ctx.operator2 = value;
-    return handleEquals(ctx, value);
-  };
-
-  const handleSignFirstCollect = (ctx) => {
-    const value = -1 * parseFloat(context.operand1.join(""));
-    context.operand1 = ("" + value).split("");
-    ctx.operand1 = context.operand1;
-
-    ctx.stringValue = "" + value;
-    return ctx;
-  };
-
-  const handleSignSecondCollect = (ctx) => {
-    const value = -1 * parseFloat(context.operand2.join(""));
-    context.operand2 = ("" + value).split("");
-    ctx.operand2 = context.operand2;
-
-    ctx.stringValue = "" + value;
-    return ctx;
-  };
-
-  const handleSignTrailingCollect = (ctx) => {
-    const value = -1 * parseFloat(context.trailing.join(""));
-    context.trailing = ("" + value).split("");
-    ctx.trailing = context.trailing;
-
-    ctx.stringValue = "" + value;
-    return ctx;
-  };
-
-  const handleEquals = (ctx, value) => {
-    const ctxNew = { ...contextNew };
-
-    const no1 = ctx.operand1.join("");
-    const no2 = ctx.operand2.join("");
-    const trailing = ctx.trailing.join("");
-
-    const op1 = ctx.operator1.replace("x", "*");
-    const op2 = ctx.operator2.replace("x", "*");
-
-    let equation = "(" + no1 + ")" + op1 + "(" + no2 + ")";
-
-    if (trailing) {
-      equation += op2 + "(" + trailing + ")";
-    }
-
-    console.log(equation);
-
-    const result = parseFloat(eval(equation).toPrecision(12));
-
-    ctxNew.operand1 = ("" + result).split("");
-
-    ctxNew.state = STATE.FIRST_OPERATOR;
-
-    if (ctx.state <= STATE.SECOND_OPERATOR) {
-      ctxNew.operand2 = ctx.operand2;
-      ctxNew.operator1 = ctx.operator1;
-    } else {
-      //trailing
-      ctxNew.operand2 = ctx.trailing;
-      ctxNew.operator1 = ctx.operator2;
-    }
-
-    ctxNew.stringValue = result;
-
-    if (TRANSITION.OPERATORS.includes(value)) {
-      ctxNew.operator1 = value;
-    }
-
-    return ctxNew;
   };
 
   const renderRow = (row) => {
