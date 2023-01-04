@@ -17,14 +17,10 @@ export default function App() {
   const DIGITS = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "."];
   const OPERATORS = ["+", "-", "x", "/"];
 
-  // the following two arrays are used
-  // to correctly calculate things
-  // like: 2+3*3 which is 11 and not 15
-
-  // addition and subtraction
-  const OPERATORS_AS = ["+", "-"];
-  //multiplication and division
-  const OPERATORS_MD = ["x", "/"];
+  // OPERATORS_ADD_SUB and OPERATORS_MULT_DIV are used
+  // to correctly calculate things like: 2+3*3 which is 11 and not 15
+  const OPERATORS_ADD_SUB = ["+", "-"];
+  const OPERATORS_MULT_DIV = ["x", "/"];
 
   const SIGN = "+/-";
   const C = "C";
@@ -40,33 +36,112 @@ export default function App() {
     TRAILING_COLLECT: 5,
   };
 
+  const TRANSITION = {
+    DIGITS: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "."],
+    OPERATORS: ["+", "-", "x", "/"],
+    SIGN: "+/-",
+    C: "C",
+    PERCENTAGE: "%",
+    EQUALS: "=",
+  };
+
   const contextNew = {
     operand1: [0],
-    operator1: "+",
-    operand2: [0],
-    operator2: "+",
-    trailing: [0],
+    operator1: "",
+    operand2: [],
+    operator2: "",
+    trailing: [],
     stringValue: 0,
     state: STATE.INITIAL,
   };
 
   const [context, setContext] = useState(contextNew);
 
-  const reset = () => {
-    updateState(contextNew);
-  };
-
-  const updateState = (cxt) => {
+  const updateState = (ctx) => {
+    console.log(ctx);
     setContext((context) => ({
       ...context,
-      ...cxt,
+      ...ctx,
     }));
   };
 
   const onButtonPressed = (value) => {
     const ctx = { ...context };
 
-    if (DIGITS.includes(value)) {
+    // operation independent of states
+    if (TRANSITION.C == value) {
+      updateState(contextNew);
+    } else if (EQUALS == value) {
+      let ctxNew = handleEquals(ctx, value);
+      updateState(ctxNew);
+    } else {
+      // transitions (state relevant)
+
+      let ctxNew = undefined;
+
+      switch (ctx.state) {
+        case STATE.INITIAL:
+        case STATE.FIRST_COLLECT:
+          if (TRANSITION.DIGITS.includes(value)) {
+            ctxNew = firstCollect(ctx, value);
+            ctxNew.state = STATE.FIRST_COLLECT;
+          } else if (TRANSITION.OPERATORS.includes(value)) {
+            ctxNew = handleFirstOperator(ctx, value);
+            ctxNew.state = STATE.FIRST_OPERATOR;
+          } else if (TRANSITION.SIGN == value) {
+            ctxNew = handleSignFirstCollect(ctx);
+          }
+          break;
+        case STATE.FIRST_OPERATOR:
+          // changing the operator
+          if (TRANSITION.OPERATORS.includes(value)) {
+            ctxNew = handleFirstOperator(ctx, value);
+            ctxNew.state = STATE.FIRST_OPERATOR;
+            break;
+          } else if (TRANSITION.SIGN == value) {
+            ctxNew = handleSignFirstCollect(ctx);
+            break;
+          }
+        case STATE.SECOND_COLLECT:
+          if (TRANSITION.DIGITS.includes(value)) {
+            ctxNew = secondCollect(ctx, value);
+            ctxNew.state = STATE.SECOND_COLLECT;
+          } else if (TRANSITION.OPERATORS.includes(value)) {
+            ctxNew = handleSecondOperator(ctx, value);
+            ctxNew.state = STATE.SECOND_OPERATOR;
+          } else if (TRANSITION.SIGN == value) {
+            ctxNew = handleSignSecondCollect(ctx);
+          }
+          break;
+        case STATE.SECOND_OPERATOR:
+          // changing the operator
+          if (TRANSITION.OPERATORS.includes(value)) {
+            ctxNew = handleSecondOperator(ctx, value);
+            ctxNew.state = STATE.SECOND_OPERATOR;
+            break;
+          } else if (TRANSITION.SIGN == value) {
+            ctxNew = handleSignSecondCollect(ctx);
+            break;
+          }
+        case STATE.TRAILING_COLLECT:
+          if (TRANSITION.DIGITS.includes(value)) {
+            ctxNew = trailingCollect(ctx, value);
+            ctxNew.state = STATE.TRAILING_COLLECT;
+          } else if (TRANSITION.OPERATORS.includes(value)) {
+            ctxNew = handleTrailingOperator(ctx, value);
+            break;
+          } else if (TRANSITION.SIGN == value) {
+            ctxNew = handleSignTrailingCollect(ctx);
+          }
+          break;
+      }
+
+      if (ctxNew) {
+        updateState(ctxNew);
+      }
+    }
+
+    /*if (DIGITS.includes(value)) {
       if (ctx.state <= STATE.FIRST_COLLECT) {
         firstCollect(value);
       } else if (ctx.state <= STATE.SECOND_COLLECT) {
@@ -89,14 +164,11 @@ export default function App() {
     } else if (EQUALS == value) {
       handleEquals(value);
       return;
-    }
+    }*/
   };
 
-  const firstCollect = (value) => {
-    const ctx = { ...context };
-
+  const firstCollect = (ctx, value) => {
     if (ctx.state == STATE.INITIAL) {
-      ctx.state = STATE.FIRST_COLLECT;
       ctx.operand1[0] = value == "." ? "0." : value;
     } else {
       if (value != "." || !ctx.operand1.join("").includes(".")) {
@@ -106,14 +178,11 @@ export default function App() {
 
     ctx.stringValue = ctx.operand1.join("");
 
-    updateState(ctx);
+    return ctx;
   };
 
-  const secondCollect = (value) => {
-    const ctx = { ...context };
-
+  const secondCollect = (ctx, value) => {
     if (ctx.state == STATE.FIRST_OPERATOR) {
-      ctx.state = STATE.SECOND_COLLECT;
       ctx.operand2[0] = value == "." ? "0." : value;
     } else {
       if (value != "." || !ctx.operand2.join("").includes(".")) {
@@ -123,14 +192,11 @@ export default function App() {
 
     ctx.stringValue = ctx.operand2.join("");
 
-    updateState(ctx);
+    return ctx;
   };
 
-  const trailingCollect = (value) => {
-    const ctx = { ...context };
-
+  const trailingCollect = (ctx, value) => {
     if (ctx.state == STATE.SECOND_OPERATOR) {
-      ctx.state = STATE.TRAILING_COLLECT;
       ctx.trailing[0] = value == "." ? "0." : value;
     } else {
       if (value != "." || !ctx.trailing.join("").includes(".")) {
@@ -140,60 +206,65 @@ export default function App() {
 
     ctx.stringValue = ctx.trailing.join("");
 
-    updateState(ctx);
+    return ctx;
   };
 
-  const handleOperators = (value) => {
-    const ctx = { ...context };
-
-    if (ctx.state == STATE.FIRST_COLLECT || ctx.state == STATE.FIRST_OPERATOR) {
+  const handleFirstOperator = (ctx, value) => {
+    if (ctx.state != STATE.INITIAL) {
       ctx.operator1 = value;
-      ctx.state = STATE.FIRST_OPERATOR;
-    } else if (
-      ctx.state == STATE.SECOND_COLLECT ||
-      ctx.state == STATE.SECOND_OPERATOR
+    }
+
+    return ctx;
+  };
+
+  const handleSecondOperator = (ctx, value) => {
+    ctx.operator2 = value;
+
+    if (
+      OPERATORS_MULT_DIV.includes(value) &&
+      OPERATORS_ADD_SUB.includes(ctx.operator1)
     ) {
-      context.operator2 = value;
-      context.state = STATE.SECOND_OPERATOR;
-      //updateState(ctx);
-
-      //console.log("ctx1: ", ctx);
-      if (
-        OPERATORS_MD.includes(value) &&
-        OPERATORS_AS.includes(ctx.operator1)
-      ) {
-        //wait
-        return;
-      }
-
-      handleEquals(value);
-      return;
+      //wait
+      return ctx;
     }
 
-    updateState(ctx);
+    return handleEquals(ctx, value);
   };
 
-  const handleSign = () => {
-    const ctx = { ...context };
-
-    if (ctx.state <= STATE.FIRST_COLLECT) {
-      context.operand1[0] = -1 * context.operand1[0];
-      ctx.stringValue = context.operand1.join("");
-    } else if (ctx.state <= STATE.SECOND_COLLECT) {
-      context.operand2[0] = -1 * context.operand2[0];
-      ctx.stringValue = context.operand2.join("");
-    } else if (ctx.state <= STATE.TRAILING_COLLECT) {
-      context.trailing[0] = -1 * context.trailing[0];
-      ctx.stringValue = context.trailing.join("");
-    }
-
-    updateState(ctx);
+  const handleTrailingOperator = (ctx, value) => {
+    ctx.operator2 = value;
+    return handleEquals(ctx, value);
   };
 
-  const handleEquals = (value) => {
-    const ctx = { ...context };
+  const handleSignFirstCollect = (ctx) => {
+    const value = -1 * parseFloat(context.operand1.join(""));
+    context.operand1 = ("" + value).split("");
+    ctx.operand1 = context.operand1;
 
-    console.log("ctx2: ", ctx);
+    ctx.stringValue = "" + value;
+    return ctx;
+  };
+
+  const handleSignSecondCollect = (ctx) => {
+    const value = -1 * parseFloat(context.operand2.join(""));
+    context.operand2 = ("" + value).split("");
+    ctx.operand2 = context.operand2;
+
+    ctx.stringValue = "" + value;
+    return ctx;
+  };
+
+  const handleSignTrailingCollect = (ctx) => {
+    const value = -1 * parseFloat(context.trailing.join(""));
+    context.trailing = ("" + value).split("");
+    ctx.trailing = context.trailing;
+
+    ctx.stringValue = "" + value;
+    return ctx;
+  };
+
+  const handleEquals = (ctx, value) => {
+    const ctxNew = { ...contextNew };
 
     const no1 = ctx.operand1.join("");
     const no2 = ctx.operand2.join("");
@@ -202,26 +273,36 @@ export default function App() {
     const op1 = ctx.operator1.replace("x", "*");
     const op2 = ctx.operator2.replace("x", "*");
 
-    const equation =
-      "(" + no1 + ")" + op1 + "(" + no2 + ")" + op2 + "(" + trailing + ")";
+    let equation = "(" + no1 + ")" + op1 + "(" + no2 + ")";
+
+    if (trailing) {
+      equation += op2 + "(" + trailing + ")";
+    }
+
     console.log(equation);
 
     const result = parseFloat(eval(equation).toPrecision(12));
 
-    const ctxNew = { ...contextNew };
     ctxNew.operand1 = ("" + result).split("");
-    ctxNew.operand2 = ctx.operand2;
-    ctxNew.state = STATE.FIRST_OPERATOR;
-    ctxNew.stringValue = result;
 
-    if (OPERATORS.includes(value)) {
-      //operator clicked
-      ctxNew.operator1 = value;
-    } else {
+    ctxNew.state = STATE.FIRST_OPERATOR;
+
+    if (ctx.state <= STATE.SECOND_OPERATOR) {
+      ctxNew.operand2 = ctx.operand2;
       ctxNew.operator1 = ctx.operator1;
+    } else {
+      //trailing
+      ctxNew.operand2 = ctx.trailing;
+      ctxNew.operator1 = ctx.operator2;
     }
 
-    updateState(ctxNew);
+    ctxNew.stringValue = result;
+
+    if (TRANSITION.OPERATORS.includes(value)) {
+      ctxNew.operator1 = value;
+    }
+
+    return ctxNew;
   };
 
   const renderRow = (row) => {
