@@ -12,148 +12,216 @@ import {
 
 export default function App() {
   const windowWidth = Dimensions.get("window").width;
-  const buttonWidth = windowWidth / 4.8;
+  const buttonWidth = windowWidth * 0.21;
 
-  const [calculator, setCalculator] = useState({ inputStr: "0" });
+  const DIGITS = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "."];
+  const OPERATORS = ["+", "-", "x", "/"];
+
+  // the following two arrays are used
+  // to correctly calculate things
+  // like: 2+3*3 which is 11 and not 15
+
+  // addition and subtraction
+  const OPERATORS_AS = ["+", "-"];
+  //multiplication and division
+  const OPERATORS_MD = ["x", "/"];
+
+  const SIGN = "+/-";
+  const C = "C";
+  const PERCENT = "%";
+  const EQUALS = "=";
+
+  const STATE = {
+    INITIAL: 0,
+    FIRST_COLLECT: 1,
+    FIRST_OPERATOR: 2,
+    SECOND_COLLECT: 3,
+    SECOND_OPERATOR: 4,
+    TRAILING_COLLECT: 5,
+  };
+
+  const contextNew = {
+    operand1: [0],
+    operator1: "+",
+    operand2: [0],
+    operator2: "+",
+    trailing: [0],
+    stringValue: 0,
+    state: STATE.INITIAL,
+  };
+
+  const [context, setContext] = useState(contextNew);
 
   const reset = () => {
-    const calculatorUpdated = {
-      operand1: undefined,
-      operand2: undefined,
-      operator: undefined,
-      input: undefined,
-      inputStr: "0",
-    };
-
-    update(calculatorUpdated);
+    updateState(contextNew);
   };
 
-  const onButtonClick = (item) => {
-    const calculatorUpdated = { ...calculator };
-    const { input, inputStr, operator } = calculatorUpdated;
-
-    if (!isNaN(item.value)) {
-      if (input === undefined) {
-        console.log("drin", operator);
-        calculatorUpdated.input = parseFloat(item.value);
-        calculatorUpdated.inputStr = "" + item.value;
-      } else {
-        console.log("nicht drin", operator);
-
-        calculatorUpdated.inputStr = inputStr + item.value;
-        calculatorUpdated.input = parseFloat(calculatorUpdated.inputStr);
-      }
-    } else {
-      switch (item.value) {
-        case ".":
-          if (input === undefined) {
-            calculatorUpdated.input = 0.0;
-            calculatorUpdated.inputStr = "0.";
-          } else {
-            calculatorUpdated.inputStr = inputStr.includes(".")
-              ? inputStr
-              : inputStr + ".";
-            calculatorUpdated.input = parseFloat(calculatorUpdated.inputStr);
-          }
-
-          break;
-        case "C":
-          reset();
-          return;
-        case "+/-":
-          calculatorUpdated.input = -1 * parseFloat(inputStr);
-          calculatorUpdated.inputStr = "" + calculatorUpdated.input;
-          break;
-        case "%":
-          onPercentageClicked();
-          return;
-        case "=":
-          calculatorUpdated.input = parseFloat(calculatorUpdated.inputStr);
-          onEqualsClicked();
-          return;
-        default:
-          onOperatorClicked(item.value);
-          return;
-      }
-    }
-
-    update(calculatorUpdated);
-  };
-
-  const onOperatorClicked = (operator) => {
-    const calculatorUpdated = { ...calculator };
-    calculatorUpdated.operand1 = calculatorUpdated.input;
-    calculatorUpdated.operator = operator;
-    calculatorUpdated.input = undefined;
-
-    update(calculatorUpdated);
-  };
-
-  const onPercentageClicked = () => {
-    const calculatorUpdated = { ...calculator };
-    const per = calculatorUpdated.input / 100;
-
-    if (calculatorUpdated.operator !== undefined) {
-      const value = calculatorUpdated.operand1 * per;
-      calculatorUpdated.operand2 = value;
-      calculatorUpdated.input = value;
-      calculatorUpdated.inputStr = "" + value;
-    } else {
-      calculatorUpdated.input = per;
-      calculatorUpdated.inputStr = "" + per;
-    }
-
-    update(calculatorUpdated);
-  };
-
-  const onEqualsClicked = () => {
-    const calculatorUpdated = { ...calculator };
-
-    if (calculatorUpdated.operator !== undefined) {
-      if (calculatorUpdated.operand2 === undefined) {
-        calculatorUpdated.operand2 = parseFloat(calculatorUpdated.inputStr);
-      }
-
-      const { operand1, operator, operand2 } = calculatorUpdated;
-
-      let result = calculatorUpdated.input;
-
-      switch (operator) {
-        case "+":
-          result = operand1 + operand2;
-          break;
-        case "-":
-          result = operand1 - operand2;
-          break;
-        case "x":
-          result = operand1 * operand2;
-          break;
-        case "/":
-          if (operand2 == 0) {
-            result = "Error";
-          } else {
-            result = operand1 / operand2;
-          }
-
-          break;
-      }
-
-      calculatorUpdated.input = result;
-      calculatorUpdated.inputStr = "" + parseFloat(result.toPrecision(12));
-
-      if (!isNaN(result)) {
-        calculatorUpdated.operand1 = result;
-      }
-
-      update(calculatorUpdated);
-    }
-  };
-
-  const update = (calculatorUpdated) => {
-    setCalculator((calculator) => ({
-      ...calculator,
-      ...calculatorUpdated,
+  const updateState = (cxt) => {
+    setContext((context) => ({
+      ...context,
+      ...cxt,
     }));
+  };
+
+  const onButtonPressed = (value) => {
+    const ctx = { ...context };
+
+    if (DIGITS.includes(value)) {
+      if (ctx.state <= STATE.FIRST_COLLECT) {
+        firstCollect(value);
+      } else if (ctx.state <= STATE.SECOND_COLLECT) {
+        secondCollect(value);
+      } else if (ctx.state <= STATE.TRAILING_COLLECT) {
+        trailingCollect(value);
+      }
+
+      return;
+    } else if (OPERATORS.includes(value)) {
+      handleOperators(value);
+      return;
+    } else if (SIGN == value) {
+      handleSign();
+      return;
+    } else if (C == value) {
+      reset();
+      return;
+    } else if (PERCENT == value) {
+    } else if (EQUALS == value) {
+      handleEquals(value);
+      return;
+    }
+  };
+
+  const firstCollect = (value) => {
+    const ctx = { ...context };
+
+    if (ctx.state == STATE.INITIAL) {
+      ctx.state = STATE.FIRST_COLLECT;
+      ctx.operand1[0] = value == "." ? "0." : value;
+    } else {
+      if (value != "." || !ctx.operand1.join("").includes(".")) {
+        ctx.operand1.push(value);
+      }
+    }
+
+    ctx.stringValue = ctx.operand1.join("");
+
+    updateState(ctx);
+  };
+
+  const secondCollect = (value) => {
+    const ctx = { ...context };
+
+    if (ctx.state == STATE.FIRST_OPERATOR) {
+      ctx.state = STATE.SECOND_COLLECT;
+      ctx.operand2[0] = value == "." ? "0." : value;
+    } else {
+      if (value != "." || !ctx.operand2.join("").includes(".")) {
+        ctx.operand2.push(value);
+      }
+    }
+
+    ctx.stringValue = ctx.operand2.join("");
+
+    updateState(ctx);
+  };
+
+  const trailingCollect = (value) => {
+    const ctx = { ...context };
+
+    if (ctx.state == STATE.SECOND_OPERATOR) {
+      ctx.state = STATE.TRAILING_COLLECT;
+      ctx.trailing[0] = value == "." ? "0." : value;
+    } else {
+      if (value != "." || !ctx.trailing.join("").includes(".")) {
+        ctx.trailing.push(value);
+      }
+    }
+
+    ctx.stringValue = ctx.trailing.join("");
+
+    updateState(ctx);
+  };
+
+  const handleOperators = (value) => {
+    const ctx = { ...context };
+
+    if (ctx.state == STATE.FIRST_COLLECT || ctx.state == STATE.FIRST_OPERATOR) {
+      ctx.operator1 = value;
+      ctx.state = STATE.FIRST_OPERATOR;
+    } else if (
+      ctx.state == STATE.SECOND_COLLECT ||
+      ctx.state == STATE.SECOND_OPERATOR
+    ) {
+      context.operator2 = value;
+      context.state = STATE.SECOND_OPERATOR;
+      //updateState(ctx);
+
+      //console.log("ctx1: ", ctx);
+      if (
+        OPERATORS_MD.includes(value) &&
+        OPERATORS_AS.includes(ctx.operator1)
+      ) {
+        //wait
+        return;
+      }
+
+      handleEquals(value);
+      return;
+    }
+
+    updateState(ctx);
+  };
+
+  const handleSign = () => {
+    const ctx = { ...context };
+
+    if (ctx.state <= STATE.FIRST_COLLECT) {
+      context.operand1[0] = -1 * context.operand1[0];
+      ctx.stringValue = context.operand1.join("");
+    } else if (ctx.state <= STATE.SECOND_COLLECT) {
+      context.operand2[0] = -1 * context.operand2[0];
+      ctx.stringValue = context.operand2.join("");
+    } else if (ctx.state <= STATE.TRAILING_COLLECT) {
+      context.trailing[0] = -1 * context.trailing[0];
+      ctx.stringValue = context.trailing.join("");
+    }
+
+    updateState(ctx);
+  };
+
+  const handleEquals = (value) => {
+    const ctx = { ...context };
+
+    console.log("ctx2: ", ctx);
+
+    const no1 = ctx.operand1.join("");
+    const no2 = ctx.operand2.join("");
+    const trailing = ctx.trailing.join("");
+
+    const op1 = ctx.operator1.replace("x", "*");
+    const op2 = ctx.operator2.replace("x", "*");
+
+    const equation =
+      "(" + no1 + ")" + op1 + "(" + no2 + ")" + op2 + "(" + trailing + ")";
+    console.log(equation);
+
+    const result = parseFloat(eval(equation).toPrecision(12));
+
+    const ctxNew = { ...contextNew };
+    ctxNew.operand1 = ("" + result).split("");
+    ctxNew.operand2 = ctx.operand2;
+    ctxNew.state = STATE.FIRST_OPERATOR;
+    ctxNew.stringValue = result;
+
+    if (OPERATORS.includes(value)) {
+      //operator clicked
+      ctxNew.operator1 = value;
+    } else {
+      ctxNew.operator1 = ctx.operator1;
+    }
+
+    updateState(ctxNew);
   };
 
   const renderRow = (row) => {
@@ -162,7 +230,7 @@ export default function App() {
         <TouchableOpacity
           key={item.value}
           style={styles.button(item.type, buttonWidth)}
-          onPress={() => onButtonClick(item)}
+          onPress={() => onButtonPressed(item.value)}
         >
           <Text style={item.type == 1 ? styles.blackText : styles.whiteText}>
             {item.value}
@@ -209,7 +277,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       <SafeAreaView style={[styles.container, styles.safeArea]}>
-        <Text style={styles.resultField}>{calculator.inputStr}</Text>
+        <Text style={styles.resultField}>{context.stringValue}</Text>
 
         <View style={styles.row}>{renderRow(row1)}</View>
 
