@@ -125,8 +125,6 @@ export default function App() {
     const len = ctx.operands.length;
     let from = len > 1 ? ctx.operands[len - 2] : undefined;
 
-    console.log("len: ", len, "from", from);
-
     if (len > 0) {
       const percentagePoint = ctx.operands.pop();
 
@@ -162,7 +160,6 @@ export default function App() {
     ) {
       const equation =
         ctx.operands[0] + ctx.lastOperator + "(" + ctx.lastOperand + ")";
-      console.log("equation: ", equation);
       ctx.operands[0] = parseFloat(
         eval(equation.replaceAll("x", "*")).toPrecision(12)
       );
@@ -209,8 +206,6 @@ export default function App() {
 
     const equation = merged.join("").replaceAll("x", "*");
     const result = parseFloat(eval(equation).toPrecision(12));
-
-    console.log("merged: ", merged, "equation: ", equation, "result: ", result);
 
     return result;
   };
