@@ -14,6 +14,8 @@ export default function App() {
   const windowWidth = Dimensions.get("window").width;
   const buttonWidth = windowWidth * 0.21;
 
+  const ERROR = "Error";
+
   const DIGITS = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "."];
   const OPERATORS = ["+", "-", "x", "/"];
 
@@ -100,39 +102,11 @@ export default function App() {
     const ctx = { ...context };
 
     if (DIGITS.includes(value)) {
-      if (
-        ctx.state == STATES.INITIAL ||
-        ctx.state == STATES.OPERATOR ||
-        ctx.state == STATES.EQUALS
-      ) {
-        const operand = value == "." ? "0." : value;
-        ctx.operands.push(operand);
-        ctx.stringValue = operand;
-        ctx.state = STATES.COLLECTING;
-      } else {
-        //COLLECTING
-        const idx = ctx.operands.length - 1;
-        const oldValue = ctx.operands[idx];
-
-        if (value != "." || !oldValue.includes(".")) {
-          const operand = oldValue + "" + value;
-          ctx.operands[idx] = operand;
-          ctx.stringValue = operand;
-        }
-
-        ctx.state = STATES.COLLECTING;
-      }
+      handleDigits(ctx, value);
+      ctx.state = STATES.COLLECTING;
     } else if (OPERATORS.includes(value)) {
-      if (ctx.state == STATES.OPERATOR && ctx.operators.length > 0) {
-        // change operator
-        ctx.operators.pop();
-        ctx.operators.push(value);
+      if (handleOperators(ctx, value) === true) {
         ctx.state = STATES.OPERATOR;
-        handleSign(ctx, value);
-      } else if (ctx.state != STATES.INITIAL) {
-        ctx.operators.push(value);
-        ctx.state = STATES.OPERATOR;
-        handleSign(ctx, value);
       }
     } else if (value == EQUALS) {
       const newCtx = handleEquals(ctx);
@@ -145,14 +119,66 @@ export default function App() {
       updateState(contextNew);
       return;
     } else if (value == SIGN) {
-      if (ctx.operands.length > 0) {
-        const operand = String(-1 * parseFloat(ctx.operands.pop()));
-        ctx.operands.push(operand);
-        ctx.stringValue = operand;
-      }
+      handleSign(ctx);
     }
 
     updateState(ctx);
+  };
+
+  const handleDigits = (ctx, value) => {
+    if (
+      ctx.state == STATES.INITIAL ||
+      ctx.state == STATES.OPERATOR ||
+      ctx.state == STATES.EQUALS
+    ) {
+      const operand = value == "." ? "0." : value;
+      ctx.operands.push(operand);
+      ctx.stringValue = operand;
+    } else {
+      //COLLECTING
+      const idx = ctx.operands.length - 1;
+      const oldValue = ctx.operands[idx];
+
+      if (value != "." || !oldValue.includes(".")) {
+        const operand = oldValue + "" + value;
+        ctx.operands[idx] = operand;
+        ctx.stringValue = operand;
+      }
+    }
+  };
+
+  const handleOperators = (ctx, value) => {
+    let changeState = false;
+
+    if (ctx.state == STATES.OPERATOR && ctx.operators.length > 0) {
+      // change operator
+      ctx.operators.pop();
+      ctx.operators.push(value);
+      changeState = true;
+    } else if (ctx.state != STATES.INITIAL) {
+      ctx.operators.push(value);
+      changeState = true;
+    }
+
+    if (
+      changeState === true &&
+      ctx.operands.length > 1 &&
+      ctx.operators.length > 0
+    ) {
+      if (OPERATORS_MULT_DIV.includes(value)) {
+        const found = ctx.operators.find((opr) =>
+          OPERATORS_ADD_SUB.includes(opr)
+        );
+        if (found) {
+          //wait
+          return changeState;
+        }
+      }
+
+      ctx.stringValue = calculate(ctx);
+    }
+
+    return changeState;
   };
 
   const handlePercentage = (ctx) => {
@@ -173,6 +199,14 @@ export default function App() {
 
       ctx.operands.push(result);
       ctx.stringValue = String(result);
+    }
+  };
+
+  const handleSign = (ctx) => {
+    if (ctx.operands.length > 0) {
+      const operand = String(-1 * parseFloat(ctx.operands.pop()));
+      ctx.operands.push(operand);
+      ctx.stringValue = operand;
     }
   };
 
@@ -202,30 +236,15 @@ export default function App() {
       const newCtx = { ...contextNew };
       newCtx.lastOperand = ctx.operands.slice(-1)[0];
       newCtx.lastOperator = ctx.operators.slice(-1)[0];
-      newCtx.operands[0] = calculate(ctx);
-      newCtx.stringValue = String(newCtx.operands[0]);
+
+      newCtx.stringValue = calculate(ctx);
+      if (newCtx.stringValue != ERROR) {
+        newCtx.operands[0] = newCtx.stringValue;
+      }
       return newCtx;
     }
 
     return ctx;
-  };
-
-  const handleSign = (ctx, value) => {
-    if (ctx.operands.length < 2 || ctx.operators.length == 0) {
-      return;
-    }
-
-    if (OPERATORS_MULT_DIV.includes(value)) {
-      const found = ctx.operators.find((opr) =>
-        OPERATORS_ADD_SUB.includes(opr)
-      );
-      if (found) {
-        //wait
-        return;
-      }
-    }
-
-    ctx.stringValue = calculate(ctx);
   };
 
   const calculate = (ctx) => {
@@ -238,8 +257,13 @@ export default function App() {
       merged.push(lastElement);
     }
 
+    console.log("merged: ", merged);
+
     const equation = merged.join("").replaceAll("x", "*");
-    const result = parseFloat(eval(equation).toPrecision(12));
+    console.log("equation: ", equation, equation.includes("/(0)"));
+    const result = equation.includes("/(0)")
+      ? ERROR
+      : parseFloat(eval(equation).toPrecision(12));
 
     return result;
   };
@@ -326,7 +350,7 @@ const styles = StyleSheet.create({
   button: (type, width, isSelected) => {
     const bgColor = type == 1 ? "#A6A6A6" : type == 2 ? "#0984E3" : "#333333";
     const w = type == 3 ? width * 2 : width;
-    const borderWidth = isSelected ? 1 : 0;
+    const borderWidth = isSelected ? 2 : 0;
 
     return {
       width: w,
