@@ -105,7 +105,8 @@ export default function App() {
       handleDigits(ctx, value);
       ctx.state = STATES.COLLECTING;
     } else if (OPERATORS.includes(value)) {
-      if (handleOperators(ctx, value) === true) {
+      const changeState = handleOperators(ctx, value);
+      if (changeState === true) {
         ctx.state = STATES.OPERATOR;
       }
     } else if (value == EQUALS) {
@@ -257,10 +258,7 @@ export default function App() {
       merged.push(lastElement);
     }
 
-    console.log("merged: ", merged);
-
     const equation = merged.join("").replaceAll("x", "*");
-    console.log("equation: ", equation, equation.includes("/(0)"));
     const result = equation.includes("/(0)")
       ? ERROR
       : parseFloat(eval(equation).toPrecision(12));
