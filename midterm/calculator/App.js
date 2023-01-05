@@ -529,6 +529,8 @@ const styles = StyleSheet.create({
       backgroundColor: bgColor,
       borderRadius: themeButtonWidth / 2,
       marginLeft: 6,
+      borderColor: "#000",
+      borderWidth: 1,
     };
   },
 });
