@@ -142,10 +142,7 @@ export default function App() {
 
       if (value != "." || !oldValue.includes(".")) {
         const operand = parseFloat(oldValue + "" + value);
-        if (operand !== Infinity) {
-          ctx.operands[idx] = operand;
-        }
-
+        ctx.operands[idx] = operand;
         ctx.stringValue = operand;
       }
     }
@@ -262,9 +259,10 @@ export default function App() {
     }
 
     const equation = merged.join("").replaceAll("x", "*");
-    const result = equation.includes("/(0)")
-      ? ERROR
-      : parseFloat(eval(equation).toPrecision(12));
+    const result =
+      equation.includes("/(0)") || equation.includes("Infinity")
+        ? ERROR
+        : parseFloat(eval(equation).toPrecision(12));
 
     return result;
   };
