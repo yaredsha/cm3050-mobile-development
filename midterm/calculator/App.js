@@ -254,7 +254,12 @@ export default function App() {
 
     //last element can't be an operator
     const lastElement = merged.pop();
-    if (!OPERATORS.includes(lastElement)) {
+    if (OPERATORS.includes(lastElement)) {
+      if (ctx.operands.length == 1) {
+        merged.push(lastElement);
+        merged.push(ctx.operands[0]);
+      }
+    } else {
       merged.push(lastElement);
     }
 
