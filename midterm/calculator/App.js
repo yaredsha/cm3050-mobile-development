@@ -13,7 +13,7 @@ import {
 export default function App() {
   const windowWidth = Dimensions.get("window").width;
   const buttonWidth = windowWidth * 0.21;
-  const themeButtonWidth = buttonWidth * 0.7;
+  const themeButtonWidth = buttonWidth * 0.6;
 
   const ERROR = "Error";
 
@@ -91,7 +91,7 @@ export default function App() {
   const [context, setContext] = useState({ ...contextNew });
 
   const updateState = (ctx) => {
-    //console.log(ctx);
+    console.log(ctx);
     setContext((context) => ({
       ...context,
       ...ctx,
@@ -251,11 +251,13 @@ export default function App() {
     const intValue = parseInt(num);
     const arrValue = strNum.split(".");
 
-    let result = sign + intValue;
+    let result = (sign + intValue).replace("--", "-");
 
     if (arrValue.length > 1) {
       result = "" + sign + intValue + "." + arrValue[1];
     }
+
+    console.log(num, result);
 
     return result;
   };
@@ -378,7 +380,11 @@ export default function App() {
   };
 
   const renderThemesButtons = () => {
-    return themesButtons.map((item) => {
+    const currentThemesButtons = themesButtons.filter(
+      (item) => item.name != context.theme
+    );
+
+    return currentThemesButtons.map((item) => {
       return (
         <TouchableOpacity
           key={item.name}
@@ -523,14 +529,17 @@ const styles = StyleSheet.create({
   },
 
   themeButton: (bgColor, themeButtonWidth) => {
+    const height = themeButtonWidth * 1.3;
+    const marginTop = -height / 2;
+    const borderRadius = height * 0.24;
+
     return {
       width: themeButtonWidth,
-      height: themeButtonWidth,
+      height: height,
       backgroundColor: bgColor,
-      borderRadius: themeButtonWidth / 2,
-      marginLeft: 6,
-      borderColor: "#000",
-      borderWidth: 1,
+      marginLeft: 3,
+      borderRadius: borderRadius,
+      marginTop: marginTop,
     };
   },
 });
