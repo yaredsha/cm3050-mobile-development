@@ -141,8 +141,11 @@ export default function App() {
       const oldValue = ctx.operands[idx];
 
       if (value != "." || !oldValue.includes(".")) {
-        const operand = oldValue + "" + value;
-        ctx.operands[idx] = operand;
+        const operand = parseFloat(oldValue + "" + value);
+        if (operand !== Infinity) {
+          ctx.operands[idx] = operand;
+        }
+
         ctx.stringValue = operand;
       }
     }
@@ -297,7 +300,9 @@ export default function App() {
   return (
     <View style={styles.container}>
       <SafeAreaView style={[styles.container, styles.safeArea]}>
-        <Text style={styles.resultField}>{context.stringValue}</Text>
+        <Text style={styles.resultField(context.stringValue)}>
+          {context.stringValue}
+        </Text>
 
         <View style={styles.row}>{renderRow(row1)}</View>
 
@@ -333,16 +338,27 @@ const styles = StyleSheet.create({
     margin: 20,
   },
 
-  resultField: {
-    fontSize: "70%",
-    color: "#fff",
-    borderColor: "#fff",
-    minWidth: "100%",
-    textAlign: "right",
-  },
-
   row: {
     flexDirection: "row",
+  },
+
+  resultField: (stringValue) => {
+    console.log("stringValue: ", stringValue);
+    let len = String(stringValue).length;
+    len = len < 9 ? 8 : len + (len - 8) * 10;
+
+    const size = Math.round((8 - (8 * (len - 8)) / 100) / 0.114);
+    const fontSize = (size >= 47 ? size : 47) + "%";
+
+    console.log("len: ", len, "fontSize: ", fontSize);
+
+    return {
+      fontSize: fontSize,
+      color: "#fff",
+      borderColor: "#fff",
+      minWidth: "100%",
+      textAlign: "right",
+    };
   },
 
   button: (type, width, isSelected) => {
