@@ -25,7 +25,8 @@ export default function App() {
   const OPERATORS_MULT_DIV = ["×", "/"];
 
   const SIGN = "+/-";
-  const CLEAR = "C";
+  const ALL_CLEAR = "AC";
+  const CLEAR_ENTRY = "C";
   const PERCENT = "%";
   const EQUALS = "=";
 
@@ -37,7 +38,7 @@ export default function App() {
   };
 
   const row1 = [
-    { type: 1, value: "C" },
+    { type: 1, value: ALL_CLEAR },
     { type: 1, value: "+/-" },
     { type: 1, value: "%" },
     { type: 2, value: "/" },
@@ -107,7 +108,11 @@ export default function App() {
       return;
     } else if (value == PERCENT) {
       handlePercentage(ctx);
-    } else if (value == CLEAR) {
+    } else if (value == CLEAR_ENTRY && canClearEntry(ctx)) {
+      ctx.operands.pop();
+      ctx.stringValue = ctx.operands.slice(-1)[0];
+      ctx.state = STATES.OPERATOR;
+    } else if (value == ALL_CLEAR) {
       updateState(contextNew);
       return;
     } else if (value == SIGN) {
@@ -115,6 +120,10 @@ export default function App() {
     }
 
     updateState(ctx);
+  };
+
+  const canClearEntry = (ctx) => {
+    return ctx.operands.length > 1 && ctx.state === STATES.COLLECTING;
   };
 
   const handleDigits = (ctx, value) => {
@@ -291,7 +300,14 @@ export default function App() {
   };
 
   const renderRow = (row) => {
-    return row.map((item) => {
+    let currentRow = row;
+
+    if (row[0].value == ALL_CLEAR && canClearEntry(context)) {
+      currentRow = [...row];
+      currentRow[0].value = CLEAR_ENTRY;
+    }
+
+    return currentRow.map((item) => {
       return (
         <TouchableOpacity
           key={item.value}
