@@ -17,12 +17,12 @@ export default function App() {
   const ERROR = "Error";
 
   const DIGITS = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "."];
-  const OPERATORS = ["+", "-", "x", "/"];
+  const OPERATORS = ["+", "-", "×", "/"];
 
   // OPERATORS_ADD_SUB and OPERATORS_MULT_DIV are used
   // to correctly calculate things like: 2+3*3 which is 11 and not 15
   const OPERATORS_ADD_SUB = ["+", "-"];
-  const OPERATORS_MULT_DIV = ["x", "/"];
+  const OPERATORS_MULT_DIV = ["×", "/"];
 
   const SIGN = "+/-";
   const CLEAR = "C";
@@ -36,15 +36,6 @@ export default function App() {
     EQUALS: "EQUALS",
   };
 
-  const TRANSITION = {
-    DIGITS: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "."],
-    OPERATORS: ["+", "-", "x", "/"],
-    SIGN: "+/-",
-    C: "C",
-    PERCENTAGE: "%",
-    EQUALS: "=",
-  };
-
   const row1 = [
     { type: 1, value: "C" },
     { type: 1, value: "+/-" },
@@ -56,7 +47,7 @@ export default function App() {
     { type: 0, value: "7" },
     { type: 0, value: "8" },
     { type: 0, value: "9" },
-    { type: 2, value: "x" },
+    { type: 2, value: "×" },
   ];
 
   const row3 = [
@@ -91,7 +82,7 @@ export default function App() {
   const [context, setContext] = useState(contextNew);
 
   const updateState = (ctx) => {
-    console.log(ctx);
+    //console.log(ctx);
     setContext((context) => ({
       ...context,
       ...ctx,
@@ -133,15 +124,23 @@ export default function App() {
       ctx.state == STATES.EQUALS
     ) {
       const operand = value == "." ? "0." : value;
-      ctx.operands.push(operand);
+
+      if (ctx.state == STATES.EQUALS) {
+        ctx.operands[0] = operand;
+      } else {
+        ctx.operands.push(operand);
+      }
+
       ctx.stringValue = operand;
     } else {
       //COLLECTING
+
       const idx = ctx.operands.length - 1;
       const oldValue = ctx.operands[idx];
 
-      if (value != "." || !oldValue.includes(".")) {
-        const operand = parseFloat(oldValue + "" + value);
+      if (value != "." || !String(oldValue).includes(".")) {
+        const strVal = oldValue + "" + value;
+        const operand = value == "." ? strVal : parseFloat(strVal);
         ctx.operands[idx] = operand;
         ctx.stringValue = operand;
       }
@@ -230,7 +229,7 @@ export default function App() {
       const equation =
         ctx.operands[0] + ctx.lastOperator + "(" + ctx.lastOperand + ")";
       ctx.operands[0] = parseFloat(
-        eval(equation.replaceAll("x", "*")).toPrecision(12)
+        eval(equation.replaceAll("×", "*")).toPrecision(11)
       );
       ctx.stringValue = String(ctx.operands[0]);
     } else if (ctx.operators.length > 0) {
@@ -248,9 +247,20 @@ export default function App() {
     return ctx;
   };
 
+  const getEquation = (ctx) => {
+    const operands = ctx.operands.map((op, index) =>
+      parseFloat(op) < 0 && index > 0 ? "(" + op + ")" : op
+    );
+    return mergeArraysAlternating(operands, ctx.operators);
+  };
+
+  const getEquationAsString = (ctx) => {
+    const merged = getEquation(ctx);
+    return merged.join("").replaceAll("/", "÷");
+  };
+
   const calculate = (ctx) => {
-    const operands = ctx.operands.map((op) => "(" + op + ")");
-    const merged = mergeArraysAlternating(operands, ctx.operators);
+    const merged = getEquation(ctx);
 
     //last element can't be an operator
     const lastElement = merged.pop();
@@ -263,11 +273,11 @@ export default function App() {
       merged.push(lastElement);
     }
 
-    const equation = merged.join("").replaceAll("x", "*");
+    const equation = merged.join("").replaceAll("×", "*");
     const result =
       equation.includes("/(0)") || equation.includes("Infinity")
         ? ERROR
-        : parseFloat(eval(equation).toPrecision(12));
+        : parseFloat(eval(equation).toPrecision(11));
 
     return result;
   };
@@ -303,6 +313,8 @@ export default function App() {
   return (
     <View style={styles.container}>
       <SafeAreaView style={[styles.container, styles.safeArea]}>
+        <Text style={styles.equationField}>{getEquationAsString(context)}</Text>
+
         <Text style={styles.resultField(context.stringValue)}>
           {context.stringValue}
         </Text>
@@ -345,15 +357,21 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
 
+  equationField: {
+    flex: 1,
+    color: "#A6A6A6",
+    marginBottom: 20,
+    minWidth: "100%",
+    fontSize: "30%",
+    padding: 10,
+  },
+
   resultField: (stringValue) => {
-    console.log("stringValue: ", stringValue);
     let len = String(stringValue).length;
     len = len < 9 ? 8 : len + (len - 8) * 10;
 
     const size = Math.round((8 - (8 * (len - 8)) / 100) / 0.114);
     const fontSize = (size >= 47 ? size : 47) + "%";
-
-    console.log("len: ", len, "fontSize: ", fontSize);
 
     return {
       fontSize: fontSize,
