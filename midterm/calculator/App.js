@@ -91,7 +91,7 @@ export default function App() {
   const [context, setContext] = useState({ ...contextNew });
 
   const updateState = (ctx) => {
-    console.log(ctx);
+    //console.log(ctx);
     setContext((context) => ({
       ...context,
       ...ctx,
@@ -256,8 +256,6 @@ export default function App() {
     if (arrValue.length > 1) {
       result = "" + sign + intValue + "." + arrValue[1];
     }
-
-    console.log(num, result);
 
     return result;
   };
