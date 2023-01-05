@@ -91,7 +91,7 @@ export default function App() {
   const [context, setContext] = useState({ ...contextNew });
 
   const updateState = (ctx) => {
-    //console.log(ctx);
+    // console.log(ctx);
     setContext((context) => ({
       ...context,
       ...ctx,
@@ -250,14 +250,19 @@ export default function App() {
     // substitution function for parseFloat
 
     const strNum = String(num);
-    const sign = strNum.startsWith("-") ? "-" : "";
     const intValue = parseInt(num);
     const arrValue = strNum.split(".");
 
-    let result = (sign + intValue).replace("--", "-");
+    let result = intValue;
 
     if (arrValue.length > 1) {
-      result = "" + sign + intValue + "." + arrValue[1];
+      result = "" + intValue + "." + arrValue[1];
+    }
+
+    //sign may get lost with 0
+    if (intValue == 0) {
+      const sign = strNum.startsWith("-") ? "-" : "";
+      result = sign + result;
     }
 
     return result;
@@ -305,6 +310,7 @@ export default function App() {
     const operandsInBrackets = operands.map((op, index) =>
       String(op).startsWith("-") && index > 0 ? "(" + op + ")" : op
     );
+
     return mergeArraysAlternating(operandsInBrackets, operators);
   };
 
@@ -321,13 +327,23 @@ export default function App() {
     if (OPERATORS.includes(lastElement)) {
       if (operands.length == 1) {
         merged.push(lastElement);
-        merged.push(operands[0]);
+
+        let singleOperand = String(operands[0]);
+
+        if (singleOperand.startsWith("-")) {
+          singleOperand = "(" + singleOperand + ")";
+        }
+
+        merged.push(singleOperand);
       }
     } else {
       merged.push(lastElement);
     }
 
     const equation = merged.join("").replaceAll("×", "*");
+
+    // console.log("merged: ", merged, "equation: ", equation);
+
     const regex = /\/0(?![\.])/;
 
     const result =
