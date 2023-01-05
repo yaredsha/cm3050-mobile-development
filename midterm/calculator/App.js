@@ -80,7 +80,7 @@ export default function App() {
     state: STATES.INITIAL,
   };
 
-  const [context, setContext] = useState(contextNew);
+  const [context, setContext] = useState({ ...contextNew });
 
   const updateState = (ctx) => {
     //console.log(ctx);
@@ -91,7 +91,7 @@ export default function App() {
   };
 
   const buttonPressed = (value) => {
-    const ctx = { ...context };
+    let ctx = { ...context };
 
     if (DIGITS.includes(value)) {
       handleDigits(ctx, value);
@@ -102,20 +102,20 @@ export default function App() {
         ctx.state = STATES.OPERATOR;
       }
     } else if (value == EQUALS) {
-      const newCtx = handleEquals(ctx);
-      newCtx.state = STATES.EQUALS;
-      updateState(newCtx);
-      return;
-    } else if (value == PERCENT) {
-      handlePercentage(ctx);
+      // can return a complete new context
+      ctx = handleEquals(ctx);
+      ctx.state = STATES.EQUALS;
     } else if (value == CLEAR_ENTRY && canClearEntry(ctx)) {
       ctx.operands.pop();
       ctx.stringValue = ctx.operands.slice(-1)[0];
       ctx.state = STATES.OPERATOR;
     } else if (value == ALL_CLEAR) {
-      updateState(contextNew);
-      return;
+      ctx = { ...contextNew };
+    } else if (value == PERCENT) {
+      // independent of state
+      handlePercentage(ctx);
     } else if (value == SIGN) {
+      // independent of state
       handleSign(ctx);
     }
 
