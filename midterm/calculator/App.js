@@ -13,6 +13,7 @@ import {
 export default function App() {
   const windowWidth = Dimensions.get("window").width;
   const buttonWidth = windowWidth * 0.21;
+  const themeButtonWidth = buttonWidth * 0.7;
 
   const ERROR = "Error";
 
@@ -71,6 +72,12 @@ export default function App() {
     { type: 2, value: "=" },
   ];
 
+  const themesButtons = [
+    { name: "light", bgColor: "#CECECE" },
+    { name: "orange", bgColor: "#FF9501" },
+    { name: "blue", bgColor: "#0984E3" },
+  ];
+
   const contextNew = {
     operands: [0],
     operators: [],
@@ -78,6 +85,7 @@ export default function App() {
     lastOperand: undefined,
     lastOperator: undefined,
     state: STATES.INITIAL,
+    theme: "blue",
   };
 
   const [context, setContext] = useState({ ...contextNew });
@@ -110,7 +118,9 @@ export default function App() {
       ctx.stringValue = ctx.operands.slice(-1)[0];
       ctx.state = STATES.OPERATOR;
     } else if (value == ALL_CLEAR) {
+      const theme = ctx.theme;
       ctx = { ...contextNew };
+      ctx.theme = theme;
     } else if (value == PERCENT) {
       // independent of state
       handlePercentage(ctx);
@@ -122,13 +132,19 @@ export default function App() {
     updateState(ctx);
   };
 
+  const themeButtonPressed = (name) => {
+    const ctx = { ...context };
+    if (ctx.theme != name) {
+      ctx.theme = name;
+      updateState(ctx);
+    }
+  };
+
   const canClearEntry = (ctx) => {
     return ctx.operands.length > 1 && ctx.state === STATES.COLLECTING;
   };
 
   const handleDigits = (ctx, value) => {
-    console.log(ctx, value);
-
     if (ctx.state != STATES.COLLECTING) {
       let operand = value == "." ? "0." : value;
 
@@ -268,6 +284,7 @@ export default function App() {
       ctx.stringValue = String(ctx.operands[0]);
     } else if (ctx.operators.length > 0) {
       const newCtx = { ...contextNew };
+      newCtx.theme = ctx.theme;
       newCtx.lastOperand = ctx.operands.slice(-1)[0];
       newCtx.lastOperator = ctx.operators.slice(-1)[0];
 
@@ -341,11 +358,18 @@ export default function App() {
           style={styles.button(
             item.type,
             buttonWidth,
-            isOperatorSelected(item.value)
+            isOperatorSelected(item.value),
+            context.theme
           )}
           onPress={() => buttonPressed(item.value)}
         >
-          <Text style={styles.text(item.type, isOperatorSelected(item.value))}>
+          <Text
+            style={styles.text(
+              item.type,
+              isOperatorSelected(item.value),
+              context.theme
+            )}
+          >
             {item.value}
           </Text>
         </TouchableOpacity>
@@ -353,12 +377,29 @@ export default function App() {
     });
   };
 
-  return (
-    <View style={styles.container}>
-      <SafeAreaView style={[styles.container, styles.safeArea]}>
-        <Text style={styles.equationField}>{getEquationAsString(context)}</Text>
+  const renderThemesButtons = () => {
+    return themesButtons.map((item) => {
+      return (
+        <TouchableOpacity
+          key={item.name}
+          style={styles.themeButton(item.bgColor, themeButtonWidth)}
+          onPress={() => themeButtonPressed(item.name)}
+        />
+      );
+    });
+  };
 
-        <Text style={styles.resultField(context.stringValue)}>
+  return (
+    <View style={styles.container(context.theme)}>
+      <SafeAreaView style={[styles.container(context.theme), styles.safeArea]}>
+        <View style={styles.themeButtonContainer(context.theme)}>
+          {renderThemesButtons()}
+        </View>
+        <Text style={styles.equationField(context.theme)}>
+          {getEquationAsString(context)}
+        </Text>
+
+        <Text style={styles.resultField(context.stringValue, context.theme)}>
           {context.stringValue}
         </Text>
 
@@ -379,11 +420,14 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#000",
-    alignItems: "center",
-    justifyContent: "flex-end",
+  container: (theme) => {
+    const bgColor = theme == "light" ? "#fff" : "#000";
+    return {
+      flex: 1,
+      backgroundColor: bgColor,
+      alignItems: "center",
+      justifyContent: "flex-end",
+    };
   },
 
   safeArea: {
@@ -394,39 +438,49 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
 
-  equationField: {
-    flex: 1,
-    color: "#A6A6A6",
-    marginBottom: 20,
-    minWidth: "100%",
-    fontSize: "30%",
-    padding: 10,
+  equationField: (theme) => {
+    const color = theme == "light" ? "#444444" : "#A6A6A6";
+    return {
+      flex: 1,
+      color: color,
+      marginBottom: 20,
+      minWidth: "100%",
+      fontSize: "30%",
+      padding: 10,
+    };
   },
 
-  resultField: (stringValue) => {
+  resultField: (stringValue, theme) => {
     let len = String(stringValue).length;
     len = len < 9 ? 8 : len + (len - 8) * 10;
 
     const size = Math.round((8 - (8 * (len - 8)) / 100) / 0.114);
     const fontSize = (size >= 47 ? size : 47) + "%";
 
+    const color = theme == "light" ? "#000" : "#fff";
+
     return {
       fontSize: fontSize,
-      color: "#fff",
-      borderColor: "#fff",
+      color: color,
       minWidth: "100%",
       textAlign: "right",
     };
   },
 
-  button: (type, width, isSelected) => {
-    const bgColor = isSelected
-      ? "#AFC7D6"
-      : type == 1
-      ? "#A6A6A6"
-      : type == 2
-      ? "#0984E3"
-      : "#333333";
+  button: (type, width, isSelected, theme) => {
+    let bgColor =
+      type == 1 ? "#A6A6A6" : theme == "light" ? "#4F4F4F" : "#333333";
+
+    if (type == 2) {
+      bgColor = isSelected
+        ? "#fff"
+        : theme == "blue"
+        ? "#0984E3"
+        : theme == "orange"
+        ? "#FF9501"
+        : "#000";
+    }
+
     const w = type == 3 ? width * 2 : width;
 
     return {
@@ -436,18 +490,45 @@ const styles = StyleSheet.create({
       justifyContent: "center",
       alignItems: "center",
       backgroundColor: bgColor,
+      borderColor: "#000",
+      borderWidth: 1,
       margin: 5,
     };
   },
 
-  text: (type, isSelected) => {
-    const color = isSelected ? "#0984E3" : type == 1 ? "#000" : "#fff";
+  text: (type, isSelected, theme) => {
+    let color = type == 1 ? "#000" : "#fff";
+
+    if (type == 2 && isSelected) {
+      color =
+        theme == "blue" ? "#0984E3" : theme == "orange" ? "#FF9501" : "#000";
+    }
 
     return {
       fontSize: "30%",
       fontWeight: "500",
       textAlign: "center",
       color: color,
+    };
+  },
+
+  themeButtonContainer: (theme) => {
+    const bgColor = theme == "light" ? "#fff" : "#000";
+
+    return {
+      justifyContent: "flex-end",
+      flexDirection: "row",
+      backgroundColor: bgColor,
+    };
+  },
+
+  themeButton: (bgColor, themeButtonWidth) => {
+    return {
+      width: themeButtonWidth,
+      height: themeButtonWidth,
+      backgroundColor: bgColor,
+      borderRadius: themeButtonWidth / 2,
+      marginLeft: 6,
     };
   },
 });
