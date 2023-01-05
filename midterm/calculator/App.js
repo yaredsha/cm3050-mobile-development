@@ -72,7 +72,7 @@ export default function App() {
   ];
 
   const contextNew = {
-    operands: [],
+    operands: [0],
     operators: [],
     stringValue: 0,
     lastOperand: undefined,
@@ -134,7 +134,7 @@ export default function App() {
     ) {
       const operand = value == "." ? "0." : value;
 
-      if (ctx.state == STATES.EQUALS) {
+      if (ctx.state == STATES.INITIAL || ctx.state == STATES.EQUALS) {
         ctx.operands[0] = operand;
       } else {
         ctx.operands.push(operand);
@@ -149,7 +149,7 @@ export default function App() {
 
       if (value != "." || !String(oldValue).includes(".")) {
         const strVal = oldValue + "" + value;
-        const operand = value == "." ? strVal : parseFloat(strVal);
+        const operand = value == "." ? strVal : parseNumber(strVal);
         ctx.operands[idx] = operand;
         ctx.stringValue = operand;
       }
@@ -164,7 +164,7 @@ export default function App() {
       ctx.operators.pop();
       ctx.operators.push(value);
       changeState = true;
-    } else if (ctx.state != STATES.INITIAL) {
+    } else {
       ctx.operators.push(value);
       changeState = true;
     }
@@ -213,10 +213,30 @@ export default function App() {
 
   const handleSign = (ctx) => {
     if (ctx.operands.length > 0) {
-      const operand = String(-1 * parseFloat(ctx.operands.pop()));
+      const oldOperand = String(ctx.operands.pop());
+      const operand = oldOperand.startsWith("-")
+        ? oldOperand.substring(1)
+        : "-" + oldOperand;
       ctx.operands.push(operand);
       ctx.stringValue = operand;
     }
+  };
+
+  const parseNumber = (num) => {
+    // substitution function for parseFloat
+
+    const strNum = String(num);
+    const sign = strNum.startsWith("-") ? "-" : "";
+    const intValue = parseInt(num);
+    const arrValue = strNum.split(".");
+
+    let result = sign + intValue;
+
+    if (arrValue.length > 1) {
+      result = "" + sign + intValue + "." + arrValue[1];
+    }
+
+    return result;
   };
 
   const mergeArraysAlternating = ([x, ...xs], ...rest) => {
@@ -258,7 +278,7 @@ export default function App() {
 
   const getEquation = (ctx) => {
     const operands = ctx.operands.map((op, index) =>
-      parseFloat(op) < 0 && index > 0 ? "(" + op + ")" : op
+      String(op).startsWith("-") && index > 0 ? "(" + op + ")" : op
     );
     return mergeArraysAlternating(operands, ctx.operators);
   };
@@ -283,8 +303,10 @@ export default function App() {
     }
 
     const equation = merged.join("").replaceAll("×", "*");
+    const regex = /\/0(?![\.])/;
+
     const result =
-      equation.includes("/(0)") || equation.includes("Infinity")
+      !equation || equation.match(regex) || equation.includes("Infinity")
         ? ERROR
         : parseFloat(eval(equation).toPrecision(11));
 
@@ -318,7 +340,7 @@ export default function App() {
           )}
           onPress={() => buttonPressed(item.value)}
         >
-          <Text style={item.type == 1 ? styles.blackText : styles.whiteText}>
+          <Text style={styles.text(item.type, isOperatorSelected(item.value))}>
             {item.value}
           </Text>
         </TouchableOpacity>
@@ -350,12 +372,6 @@ export default function App() {
     </View>
   );
 }
-
-const baseText = {
-  fontSize: "30%",
-  fontWeight: "500",
-  textAlign: "center",
-};
 
 const styles = StyleSheet.create({
   container: {
@@ -399,9 +415,14 @@ const styles = StyleSheet.create({
   },
 
   button: (type, width, isSelected) => {
-    const bgColor = type == 1 ? "#A6A6A6" : type == 2 ? "#0984E3" : "#333333";
+    const bgColor = isSelected
+      ? "#AFC7D6"
+      : type == 1
+      ? "#A6A6A6"
+      : type == 2
+      ? "#0984E3"
+      : "#333333";
     const w = type == 3 ? width * 2 : width;
-    const borderWidth = isSelected ? 2 : 0;
 
     return {
       width: w,
@@ -410,19 +431,18 @@ const styles = StyleSheet.create({
       justifyContent: "center",
       alignItems: "center",
       backgroundColor: bgColor,
-      borderWidth: borderWidth,
-      borderColor: "#fff",
       margin: 5,
     };
   },
 
-  whiteText: {
-    color: "#fff",
-    ...baseText,
-  },
+  text: (type, isSelected) => {
+    const color = isSelected ? "#0984E3" : type == 1 ? "#000" : "#fff";
 
-  blackText: {
-    color: "#000",
-    ...baseText,
+    return {
+      fontSize: "30%",
+      fontWeight: "500",
+      textAlign: "center",
+      color: color,
+    };
   },
 });
