@@ -205,26 +205,29 @@ export default function App() {
         }
       }
 
-      ctx.stringValue = calculate(ctx);
+      ctx.stringValue = calculate(ctx.operands, ctx.operators);
     }
 
     return changeState;
   };
 
   const handlePercentage = (ctx) => {
-    const len = ctx.operands.length;
-    let from = len > 1 ? ctx.operands[len - 2] : undefined;
-
-    if (len > 0) {
+    if (ctx.operands.length > 0) {
       const percentagePoint = ctx.operands.pop();
 
       let result = percentagePoint / 100;
 
-      if (from && ctx.operators.length > 0) {
-        const lastOperator = ctx.operators.slice(-1)[0];
+      if (ctx.operators.length > 0) {
+        // remove operator for percent to calculate the left part
+        const lastOperator = ctx.operators.pop();
+
         if (OPERATORS_ADD_SUB.includes(lastOperator)) {
+          const from = calculate(ctx.operands, ctx.operators);
           result = from * result;
         }
+
+        // add operator for percent back
+        ctx.operators.push(lastOperator);
       }
 
       ctx.operands.push(result);
@@ -288,7 +291,7 @@ export default function App() {
       newCtx.lastOperand = ctx.operands.slice(-1)[0];
       newCtx.lastOperator = ctx.operators.slice(-1)[0];
 
-      newCtx.stringValue = calculate(ctx);
+      newCtx.stringValue = calculate(ctx.operands, ctx.operators);
       if (newCtx.stringValue != ERROR) {
         newCtx.operands[0] = newCtx.stringValue;
       }
@@ -298,27 +301,27 @@ export default function App() {
     return ctx;
   };
 
-  const getEquation = (ctx) => {
-    const operands = ctx.operands.map((op, index) =>
+  const getEquation = (operands, operators) => {
+    const operandsInBrackets = operands.map((op, index) =>
       String(op).startsWith("-") && index > 0 ? "(" + op + ")" : op
     );
-    return mergeArraysAlternating(operands, ctx.operators);
+    return mergeArraysAlternating(operandsInBrackets, operators);
   };
 
   const getEquationAsString = (ctx) => {
-    const merged = getEquation(ctx);
+    const merged = getEquation(ctx.operands, ctx.operators);
     return merged.join("").replaceAll("/", "÷");
   };
 
-  const calculate = (ctx) => {
-    const merged = getEquation(ctx);
+  const calculate = (operands, operators) => {
+    const merged = getEquation(operands, operators);
 
     //last element can't be an operator
     const lastElement = merged.pop();
     if (OPERATORS.includes(lastElement)) {
-      if (ctx.operands.length == 1) {
+      if (operands.length == 1) {
         merged.push(lastElement);
-        merged.push(ctx.operands[0]);
+        merged.push(operands[0]);
       }
     } else {
       merged.push(lastElement);
