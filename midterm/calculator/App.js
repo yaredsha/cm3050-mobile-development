@@ -127,16 +127,21 @@ export default function App() {
   };
 
   const handleDigits = (ctx, value) => {
-    if (
-      ctx.state == STATES.INITIAL ||
-      ctx.state == STATES.OPERATOR ||
-      ctx.state == STATES.EQUALS
-    ) {
-      const operand = value == "." ? "0." : value;
+    console.log(ctx, value);
 
-      if (ctx.state == STATES.INITIAL || ctx.state == STATES.EQUALS) {
+    if (ctx.state != STATES.COLLECTING) {
+      let operand = value == "." ? "0." : value;
+
+      if (ctx.state == STATES.INITIAL) {
+        operand = String(ctx.operands[0]).startsWith("-")
+          ? "-" + operand
+          : operand;
+
+        ctx.operands[0] = operand;
+      } else if (ctx.state == STATES.EQUALS) {
         ctx.operands[0] = operand;
       } else {
+        // OPERATOR
         ctx.operands.push(operand);
       }
 
