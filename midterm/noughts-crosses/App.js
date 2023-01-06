@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
   },
 
   text: {
-    fontSize: "100%",
+    fontSize: 100,
     fontWeight: "500",
     lineHeight: 100,
   },

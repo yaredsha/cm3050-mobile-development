@@ -469,7 +469,7 @@ const styles = StyleSheet.create({
       color: color,
       marginBottom: 20,
       minWidth: "100%",
-      fontSize: "30%",
+      fontSize: 30,
       padding: 10,
     };
   },
@@ -479,7 +479,7 @@ const styles = StyleSheet.create({
     len = len < 9 ? 8 : len;
 
     const size = (70 / 51.75) * ((1 / len) * windowWidth);
-    const fontSize = (size >= 47 ? size : 47) + "%";
+    const fontSize = size >= 47 ? size : 47;
 
     const color = theme == "light" ? "#000" : "#fff";
 
@@ -527,7 +527,7 @@ const styles = StyleSheet.create({
     }
 
     return {
-      fontSize: "30%",
+      fontSize: 30,
       fontWeight: "500",
       textAlign: "center",
       color: color,

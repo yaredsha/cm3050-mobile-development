@@ -7,7 +7,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <SafeAreaView>
+      <SafeAreaView style={styles.container}>
         <Text style={styles.welcomeText}>Hello</Text>
         <Text style={styles.subtitleText}>my name is</Text>
 
@@ -15,7 +15,7 @@ export default function App() {
           <Text style={styles.boxText}>
             Yared 🍵🍪 (
             <Text style={styles.gender}>
-              ♂️<Text style={styles.ring}>💍</Text>
+              <Text style={styles.ring}>💍</Text>
             </Text>
             )
           </Text>
@@ -35,12 +35,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
-  safeArea: {
-    flex: 1,
-    width: "100%",
-    height: "100%",
-  },
-
   welcomeText: {
     fontSize: 90,
     fontFamily: "Georgia",
@@ -50,7 +44,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     textShadowColor: "rgba(0, 0, 0, 0.75)",
     textShadowOffset: { width: -1, height: 1 },
-    textShadowRadius: 10,
+    textShadowRadius: 14,
   },
 
   subtitleText: {
@@ -67,9 +61,11 @@ const styles = StyleSheet.create({
   },
 
   box: {
-    width: "100%",
-    minWidth: "100%",
-    height: "55%",
+    minWidth: "80%",
+    marginLeft: 50,
+    marginRight: 50,
+    marginBottom: 30,
+    height: "48%",
     backgroundColor: "rgba(255,255,255,0.8)",
     borderRadius: 15,
     justifyContent: "center",
@@ -94,6 +90,7 @@ const styles = StyleSheet.create({
 
   gender: {
     fontSize: 70,
+    fontWeight: "bold",
     color: "#000",
     textShadowColor: "#EE8695",
     textShadowOffset: { width: -4, height: -4 },
