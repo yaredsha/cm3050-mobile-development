@@ -328,13 +328,8 @@ export default function App() {
       if (operands.length == 1) {
         merged.push(lastElement);
 
-        let singleOperand = String(operands[0]);
-
-        if (singleOperand.startsWith("-")) {
-          singleOperand = "(" + singleOperand + ")";
-        }
-
-        merged.push(singleOperand);
+        // brakets necessary for single calcualtion to avoid "--" bug
+        merged.push("(" + operands[0] + ")");
       }
     } else {
       merged.push(lastElement);
