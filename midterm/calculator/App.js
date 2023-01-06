@@ -409,10 +409,10 @@ export default function App() {
 
   return (
     <View style={styles.container(context.theme)}>
+      <View style={styles.themeButtonContainer(context.theme)}>
+        {renderThemesButtons()}
+      </View>
       <SafeAreaView style={[styles.container(context.theme), styles.safeArea]}>
-        <View style={styles.themeButtonContainer(context.theme)}>
-          {renderThemesButtons()}
-        </View>
         <Text style={styles.equationField(context.theme)}>
           {getEquationAsString(context)}
         </Text>
@@ -539,9 +539,9 @@ const styles = StyleSheet.create({
   },
 
   themeButton: (bgColor, themeButtonWidth) => {
-    const height = themeButtonWidth * 1.3;
-    const marginTop = -height / 2;
-    const borderRadius = height * 0.24;
+    const height = themeButtonWidth * 2;
+    const marginTop = -(height * 0.2);
+    const borderRadius = height * 0.15;
 
     return {
       width: themeButtonWidth,
@@ -549,7 +549,6 @@ const styles = StyleSheet.create({
       backgroundColor: bgColor,
       marginLeft: 6,
       borderColor: "#000",
-      borderWidth: 0.2,
       borderRadius: borderRadius,
       marginTop: marginTop,
     };
