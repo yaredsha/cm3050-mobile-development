@@ -509,7 +509,7 @@ const styles = StyleSheet.create({
       alignItems: "center",
       backgroundColor: bgColor,
       borderColor: "#000",
-      borderWidth: 1,
+      borderWidth: 0.5,
       margin: 5,
     };
   },
@@ -549,7 +549,9 @@ const styles = StyleSheet.create({
       width: themeButtonWidth,
       height: height,
       backgroundColor: bgColor,
-      marginLeft: 3,
+      marginLeft: 6,
+      borderColor: "#000",
+      borderWidth: 0.2,
       borderRadius: borderRadius,
       marginTop: marginTop,
     };
