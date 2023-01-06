@@ -73,7 +73,7 @@ export default function App() {
   ];
 
   const themesButtons = [
-    { name: "light", bgColor: "#CECECE" },
+    { name: "light", bgColor: "#BFBFBF" },
     { name: "orange", bgColor: "#FF9501" },
     { name: "blue", bgColor: "#0984E3" },
   ];
@@ -439,7 +439,7 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: (theme) => {
-    const bgColor = theme == "light" ? "#fff" : "#000";
+    const bgColor = theme == "light" ? "#BFBFBF" : "#000";
     return {
       flex: 1,
       backgroundColor: bgColor,
@@ -457,7 +457,7 @@ const styles = StyleSheet.create({
   },
 
   equationField: (theme) => {
-    const color = theme == "light" ? "#444444" : "#A6A6A6";
+    const color = theme == "light" ? "#333333" : "#A6A6A6";
     return {
       flex: 1,
       color: color,
@@ -496,7 +496,7 @@ const styles = StyleSheet.create({
         ? "#0984E3"
         : theme == "orange"
         ? "#FF9501"
-        : "#000";
+        : "#000000";
     }
 
     const w = type == 3 ? width * 2 : width;
@@ -508,8 +508,6 @@ const styles = StyleSheet.create({
       justifyContent: "center",
       alignItems: "center",
       backgroundColor: bgColor,
-      borderColor: "#000",
-      borderWidth: 0.5,
       margin: 5,
     };
   },
@@ -519,7 +517,7 @@ const styles = StyleSheet.create({
 
     if (type == 2 && isSelected) {
       color =
-        theme == "blue" ? "#0984E3" : theme == "orange" ? "#FF9501" : "#000";
+        theme == "blue" ? "#0984E3" : theme == "orange" ? "#FF9501" : "#000000";
     }
 
     return {
@@ -531,7 +529,7 @@ const styles = StyleSheet.create({
   },
 
   themeButtonContainer: (theme) => {
-    const bgColor = theme == "light" ? "#fff" : "#000";
+    const bgColor = theme == "light" ? "#BFBFBF" : "#000";
 
     return {
       justifyContent: "flex-end",
