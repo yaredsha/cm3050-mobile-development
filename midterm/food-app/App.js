@@ -1,11 +1,12 @@
 import "react-native-gesture-handler";
-import { StatusBar } from "expo-status-bar";
 import {
   StyleSheet,
   Text,
   View,
   ScrollView,
   ImageBackground,
+  SafeAreaView,
+  StatusBar,
 } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -16,9 +17,6 @@ const Stack = createStackNavigator();
 const HomeScreenCell = (props) => {
   return (
     <Cell
-      style={{
-        flex: 1,
-      }}
       backgroundColor="transparent"
       cellStyle="Basic"
       highlightUnderlayColor="#ccc"
@@ -26,21 +24,19 @@ const HomeScreenCell = (props) => {
         <View
           style={{
             flex: 1,
-            alignItems: "center",
-            flexDirection: "column",
             height: 290,
+            flexDirection: "column",
+            justifyContent: "flex-start",
           }}
         >
           <View
             style={{
-              flex: 9,
-              width: "100%",
+              height: "74%",
             }}
           >
             <ImageBackground
               style={{
-                height: "95%",
-                borderWidth: 0,
+                height: "100%",
               }}
               imageStyle={{ borderRadius: 6 }}
               source={props.imgUri}
@@ -50,7 +46,7 @@ const HomeScreenCell = (props) => {
               style={{
                 position: "absolute",
                 right: 20,
-                bottom: 0,
+                bottom: -26,
                 justifyContent: "center",
                 alignItems: "center",
                 backgroundColor: "#fff",
@@ -71,6 +67,22 @@ const HomeScreenCell = (props) => {
                 {props.eta}mins
               </Text>
             </View>
+
+            <View>
+              <Text
+                style={{
+                  fontSize: 22,
+                  fontWeight: "bold",
+                  marginBottom: 10,
+                  paddingTop: 10,
+                }}
+              >
+                {props.title}
+              </Text>
+              <Text style={{ fontSize: 15, color: "#5B5B5B" }}>
+                {props.tagline}
+              </Text>
+            </View>
           </View>
         </View>
       }
@@ -80,8 +92,17 @@ const HomeScreenCell = (props) => {
 
 const MenuScreen = (props) => {
   return (
+    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+      <Text>HomeScreen</Text>
+    </View>
+  );
+};
+
+const RestaurantsScreen = (props) => {
+  return (
     <ScrollView
       style={{
+        flex: 1,
         height: "100%",
       }}
     >
@@ -93,28 +114,22 @@ const MenuScreen = (props) => {
         <Section
           style={{
             flex: 1,
+            alignItems: "center",
           }}
           name=""
+          separatorTintColor="#ccc"
           hideSeparator={props.sectionHideSeparator}
-          sectionTintColor="#ccc"
         >
           <HomeScreenCell
             title="Joe's Gelato"
             tagline="Desert, Ice cream, £££"
             eta="10-30"
-            imgUri={require("./assets/emile-mbunzama-cLpdEA23Z44-unsplash.jpg")}
+            imgUri={require("./assets/affogatomainimage_td8k5c.jpg")}
           ></HomeScreenCell>
         </Section>
       </TableView>
+      <StatusBar />
     </ScrollView>
-  );
-};
-
-const RestaurantsScreen = (props) => {
-  return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Text>RestaurantsScreen</Text>
-    </View>
   );
 };
 
@@ -122,8 +137,8 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="Menu" component={MenuScreen} hideSeparator="true" />
         <Stack.Screen name="Restaurants" component={RestaurantsScreen} />
+        <Stack.Screen name="Menu" component={MenuScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -132,7 +147,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    //backgroundColor: "#ccc",
+    backgroundColor: "#000",
     alignItems: "center",
     justifyContent: "center",
   },
