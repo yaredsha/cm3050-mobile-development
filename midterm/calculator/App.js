@@ -287,7 +287,7 @@ export default function App() {
       const equation =
         ctx.operands[0] + ctx.lastOperator + "(" + ctx.lastOperand + ")";
       ctx.operands[0] = parseFloat(
-        eval(equation.replaceAll("×", "*")).toPrecision(11)
+        eval(equation.replace(/×/g, "*")).toPrecision(11)
       );
       ctx.stringValue = String(ctx.operands[0]);
     } else if (ctx.operators.length > 0) {
@@ -316,7 +316,7 @@ export default function App() {
 
   const getEquationAsString = (ctx) => {
     const merged = getEquation(ctx.operands, ctx.operators);
-    return merged.join("").replaceAll("/", "÷");
+    return merged.join("").replace(/\//g, "÷");
   };
 
   const calculate = (operands, operators) => {
@@ -335,7 +335,7 @@ export default function App() {
       merged.push(lastElement);
     }
 
-    const equation = merged.join("").replaceAll("×", "*");
+    const equation = merged.join("").replace(/×/g, "*");
 
     // console.log("merged: ", merged, "equation: ", equation);
 
