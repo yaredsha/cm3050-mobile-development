@@ -417,7 +417,13 @@ export default function App() {
           {getEquationAsString(context)}
         </Text>
 
-        <Text style={styles.resultField(context.stringValue, context.theme)}>
+        <Text
+          style={styles.resultField(
+            context.stringValue,
+            context.theme,
+            windowWidth
+          )}
+        >
           {context.stringValue}
         </Text>
 
@@ -468,11 +474,11 @@ const styles = StyleSheet.create({
     };
   },
 
-  resultField: (stringValue, theme) => {
+  resultField: (stringValue, theme, windowWidth) => {
     let len = String(stringValue).length;
-    len = len < 9 ? 8 : len + (len - 8) * 10;
+    len = len < 9 ? 8 : len;
 
-    const size = Math.round((8 - (8 * (len - 8)) / 100) / 0.114);
+    const size = (70 / 51.75) * ((1 / len) * windowWidth);
     const fontSize = (size >= 47 ? size : 47) + "%";
 
     const color = theme == "light" ? "#000" : "#fff";
