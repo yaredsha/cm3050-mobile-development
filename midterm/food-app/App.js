@@ -5,7 +5,6 @@ import {
   View,
   ScrollView,
   ImageBackground,
-  SafeAreaView,
   StatusBar,
 } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
@@ -65,7 +64,8 @@ const HomeScreenCell = (props) => {
                   textAlign: "center",
                 }}
               >
-                {props.eta}mins
+                {props.eta}
+                {"\n"}mins
               </Text>
             </View>
 
@@ -91,15 +91,40 @@ const HomeScreenCell = (props) => {
   );
 };
 
-const MenuScreen = (props) => {
+const MenuScreen = ({ route }) => {
   return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Text>HomeScreen</Text>
-    </View>
+    <ScrollView
+      style={{
+        height: "100%",
+      }}
+    >
+      <TableView>
+        {route.params.items.map((item, i) => {
+          return (
+            <Section
+              key={"sec_" + i}
+              header={item.title}
+              separatorTintColor="#ccc"
+            >
+              {item.contents.map((content, j) => {
+                return (
+                  <Cell
+                    key={"cell_" + j}
+                    cellStyle="RightDetail"
+                    title={content.title}
+                  />
+                );
+              })}
+            </Section>
+          );
+        })}
+      </TableView>
+      <StatusBar />
+    </ScrollView>
   );
 };
 
-const RestaurantsScreen = ({ navigation, sectionHideSeparator }) => {
+const RestaurantsScreen = ({ navigation }) => {
   return (
     <ScrollView
       style={{
@@ -119,14 +144,92 @@ const RestaurantsScreen = ({ navigation, sectionHideSeparator }) => {
           }}
           name=""
           separatorTintColor="#ccc"
-          hideSeparator={sectionHideSeparator}
+          //hideSeparator={sectionHideSeparator}
         >
           <HomeScreenCell
             title="Joe's Gelato"
             tagline="Desert, Ice cream, £££"
             eta="10-30"
-            imgUri={require("./assets/affogatomainimage_td8k5c.jpg")}
-            action={() => navigation.navigate("Menu")}
+            imgUri={require("./images/affogatomainimage_td8k5c.jpg")}
+            action={() =>
+              navigation.navigate("Menu", {
+                items: [
+                  {
+                    title: "Gelato",
+                    contents: [
+                      { title: "Vanilla" },
+                      { title: "Chocolate" },
+                      { title: "Mint" },
+                    ],
+                  },
+                  {
+                    title: "Coffee",
+                    contents: [
+                      { title: "Flat white" },
+                      { title: "Latte" },
+                      { title: "Caffè Americano" },
+                    ],
+                  },
+                ],
+              })
+            }
+          ></HomeScreenCell>
+
+          <HomeScreenCell
+            title="Joe's Diner"
+            tagline="American, Burgers, ££"
+            eta="50+"
+            imgUri={require("./images/SEO_fot_amerik2_21-07.jpg")}
+            action={() =>
+              navigation.navigate("Menu", {
+                items: [
+                  {
+                    title: "Burger",
+                    contents: [
+                      { title: "Big Mac" },
+                      { title: "Hamburger" },
+                      { title: "Cheeseburger" },
+                    ],
+                  },
+                  {
+                    title: "Coffee",
+                    contents: [
+                      { title: "Flat white" },
+                      { title: "Latte" },
+                      { title: "Caffè Americano" },
+                    ],
+                  },
+                ],
+              })
+            }
+          ></HomeScreenCell>
+          <HomeScreenCell
+            title="Joe's Waffle"
+            tagline="Waffle, Chocolate, ££"
+            eta="20+"
+            imgUri={require("./images/waffle.jpg")}
+            action={() =>
+              navigation.navigate("Menu", {
+                items: [
+                  {
+                    title: "Waffle",
+                    contents: [
+                      { title: "Creme Waffle" },
+                      { title: "Waffle Chocolate" },
+                      { title: "Belgian Waffle" },
+                    ],
+                  },
+                  {
+                    title: "Coffee",
+                    contents: [
+                      { title: "Flat white" },
+                      { title: "Latte" },
+                      { title: "Caffè Americano" },
+                    ],
+                  },
+                ],
+              })
+            }
           ></HomeScreenCell>
         </Section>
       </TableView>
