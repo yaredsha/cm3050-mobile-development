@@ -46,7 +46,7 @@ const HomeScreenCell = (props) => {
               style={{
                 position: "absolute",
                 right: 20,
-                bottom: -56,
+                bottom: -51,
                 justifyContent: "center",
                 alignItems: "center",
               }}
@@ -80,7 +80,7 @@ const HomeScreenCell = (props) => {
                   marginTop: 4,
                 }}
               >
-                <Text style={{ fontSize: 20 }}>{props.stars}</Text>
+                <Text style={{ fontSize: 16 }}>{props.stars}</Text>
               </View>
             </View>
 
@@ -222,7 +222,7 @@ const RestaurantsScreen = ({ navigation }) => {
           ></HomeScreenCell>
           <HomeScreenCell
             title="Joe's Waffle"
-            tagline="Waffle, Chocolate, ££"
+            tagline="Waffle, Muffins, ££"
             eta="20+"
             stars="★★★★★"
             imgUri={require("./images/waffle.jpg")}
