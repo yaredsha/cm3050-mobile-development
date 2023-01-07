@@ -7,6 +7,7 @@ import {
   ImageBackground,
   StatusBar,
   Image,
+  Alert,
 } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -130,6 +131,12 @@ const MenuScreen = ({ route }) => {
                     title={content.title}
                     isDisabled={content.outOfStock}
                     detail={content.outOfStock == true ? "Out of Stock" : ""}
+                    onPress={() =>
+                      Alert.alert(
+                        content.title,
+                        "'" + content.title + "' added to cart"
+                      )
+                    }
                     accessory={
                       content.info == true
                         ? "DetailDisclosure"
