@@ -46,27 +46,42 @@ const HomeScreenCell = (props) => {
               style={{
                 position: "absolute",
                 right: 20,
-                bottom: -26,
+                bottom: -56,
                 justifyContent: "center",
                 alignItems: "center",
-                backgroundColor: "#fff",
-                borderRadius: 30,
-                padding: 10,
-                width: 90,
               }}
             >
-              <Text
+              <View
                 style={{
-                  fontSize: 16,
-                  fontWeight: "bold",
-                  flexWrap: "wrap",
-                  width: 60,
-                  textAlign: "center",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  backgroundColor: "#fff",
+                  borderRadius: 30,
+                  padding: 10,
+                  width: 90,
                 }}
               >
-                {props.eta}
-                {"\n"}mins
-              </Text>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    fontWeight: "bold",
+                    flexWrap: "wrap",
+                    width: 60,
+                    textAlign: "center",
+                  }}
+                >
+                  {props.eta}
+                  {"\n"}mins
+                </Text>
+              </View>
+
+              <View
+                style={{
+                  marginTop: 4,
+                }}
+              >
+                <Text style={{ fontSize: 20 }}>{props.stars}</Text>
+              </View>
             </View>
 
             <View>
@@ -74,7 +89,7 @@ const HomeScreenCell = (props) => {
                 style={{
                   fontSize: 22,
                   fontWeight: "bold",
-                  marginBottom: 10,
+                  marginBottom: 5,
                   paddingTop: 10,
                 }}
               >
@@ -150,6 +165,7 @@ const RestaurantsScreen = ({ navigation }) => {
             title="Joe's Gelato"
             tagline="Desert, Ice cream, £££"
             eta="10-30"
+            stars="★★★★"
             imgUri={require("./images/affogatomainimage_td8k5c.jpg")}
             action={() =>
               navigation.navigate("Menu", {
@@ -179,6 +195,7 @@ const RestaurantsScreen = ({ navigation }) => {
             title="Joe's Diner"
             tagline="American, Burgers, ££"
             eta="50+"
+            stars="★★★"
             imgUri={require("./images/SEO_fot_amerik2_21-07.jpg")}
             action={() =>
               navigation.navigate("Menu", {
@@ -207,6 +224,7 @@ const RestaurantsScreen = ({ navigation }) => {
             title="Joe's Waffle"
             tagline="Waffle, Chocolate, ££"
             eta="20+"
+            stars="★★★★★"
             imgUri={require("./images/waffle.jpg")}
             action={() =>
               navigation.navigate("Menu", {
@@ -248,12 +266,3 @@ export default function App() {
     </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#000",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
