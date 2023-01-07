@@ -6,6 +6,7 @@ import {
   ScrollView,
   ImageBackground,
   StatusBar,
+  Image,
 } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -127,6 +128,33 @@ const MenuScreen = ({ route }) => {
                     key={"cell_" + j}
                     cellStyle="RightDetail"
                     title={content.title}
+                    isDisabled={content.outOfStock}
+                    detail={content.outOfStock == true ? "Out of Stock" : ""}
+                    accessory={
+                      content.info == true
+                        ? "DetailDisclosure"
+                        : content.disclosure == true
+                        ? "DisclosureIndicator"
+                        : ""
+                    }
+                    image={
+                      content.outOfStock == true ? (
+                        <Image
+                          style={{
+                            borderRadius: 5,
+                            opacity: 0.5,
+                          }}
+                          source={require("./images/affogatomainimage_td8k5c.jpg")}
+                        />
+                      ) : (
+                        <Image
+                          style={{
+                            borderRadius: 5,
+                          }}
+                          source={require("./images/affogatomainimage_td8k5c.jpg")}
+                        />
+                      )
+                    }
                   />
                 );
               })}
@@ -173,17 +201,17 @@ const RestaurantsScreen = ({ navigation }) => {
                   {
                     title: "Gelato",
                     contents: [
-                      { title: "Vanilla" },
-                      { title: "Chocolate" },
-                      { title: "Mint" },
+                      { title: "Vanilla", info: true },
+                      { title: "Chocolate", outOfStock: true },
+                      { title: "Mint", disclosure: true },
                     ],
                   },
                   {
                     title: "Coffee",
                     contents: [
-                      { title: "Flat white" },
+                      { title: "Flat white", outOfStock: true },
                       { title: "Latte" },
-                      { title: "Caffè Americano" },
+                      { title: "Caffè Americano", info: true },
                     ],
                   },
                 ],
