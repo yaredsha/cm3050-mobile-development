@@ -126,6 +126,8 @@ const MenuScreen = ({ route }) => {
               {item.contents.map((content, j) => {
                 return (
                   <Cell
+                    backgroundColor="#fff"
+                    titleTextColor="#000"
                     key={"cell_" + j}
                     cellStyle="RightDetail"
                     title={content.title}
