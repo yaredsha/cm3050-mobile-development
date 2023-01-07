@@ -20,6 +20,7 @@ const HomeScreenCell = (props) => {
       backgroundColor="transparent"
       cellStyle="Basic"
       highlightUnderlayColor="#ccc"
+      onPress={props.action}
       cellContentView={
         <View
           style={{
@@ -98,7 +99,7 @@ const MenuScreen = (props) => {
   );
 };
 
-const RestaurantsScreen = (props) => {
+const RestaurantsScreen = ({ navigation, sectionHideSeparator }) => {
   return (
     <ScrollView
       style={{
@@ -118,13 +119,14 @@ const RestaurantsScreen = (props) => {
           }}
           name=""
           separatorTintColor="#ccc"
-          hideSeparator={props.sectionHideSeparator}
+          hideSeparator={sectionHideSeparator}
         >
           <HomeScreenCell
             title="Joe's Gelato"
             tagline="Desert, Ice cream, £££"
             eta="10-30"
             imgUri={require("./assets/affogatomainimage_td8k5c.jpg")}
+            action={() => navigation.navigate("Menu")}
           ></HomeScreenCell>
         </Section>
       </TableView>
