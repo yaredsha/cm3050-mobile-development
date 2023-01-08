@@ -78,6 +78,7 @@ const HomeScreenCell = (props) => {
                   borderRadius: 30,
                   padding: 10,
                   width: 90,
+                  opacity: 0.9,
                 }}
               >
                 <Text
@@ -221,7 +222,7 @@ const RestaurantsScreen = ({ navigation }) => {
             eta="10-30"
             stars="★★★★☆"
             distance={1.5}
-            imgUri={require("./images/affogatomainimage_td8k5c.jpg")}
+            imgUri={require("./assets/affogatomainimage_td8k5c.jpg")}
             action={() =>
               navigation.navigate("Menu", {
                 items: [
@@ -232,17 +233,17 @@ const RestaurantsScreen = ({ navigation }) => {
                         title: "Vanilla",
                         info: true,
                         price: 3.55,
-                        img: require("./images/vanilla.jpg"),
+                        img: require("./assets/vanilla.jpg"),
                       },
                       {
                         title: "Chocolate",
                         price: 3.69,
-                        img: require("./images/chocolate.jpg"),
+                        img: require("./assets/chocolate.jpg"),
                       },
                       {
                         title: "Mint",
                         price: 4.65,
-                        img: require("./images/mint.jpg"),
+                        img: require("./assets/mint.jpg"),
                       },
                     ],
                   },
@@ -253,18 +254,18 @@ const RestaurantsScreen = ({ navigation }) => {
                         title: "Flat white",
                         outOfStock: true,
                         price: 1.59,
-                        img: require("./images/flat-white.jpg"),
+                        img: require("./assets/flat-white.jpg"),
                       },
                       {
                         title: "Latte",
                         price: 2.05,
-                        img: require("./images/latte.jpg"),
+                        img: require("./assets/latte.jpg"),
                       },
                       {
                         title: "Caffè Americano",
                         info: true,
                         price: 3.05,
-                        img: require("./images/americano.jpg"),
+                        img: require("./assets/americano.jpg"),
                       },
                     ],
                   },
@@ -279,7 +280,7 @@ const RestaurantsScreen = ({ navigation }) => {
             eta="50+"
             stars="★★★☆☆"
             distance={3}
-            imgUri={require("./images/SEO_fot_amerik2_21-07.jpg")}
+            imgUri={require("./assets/SEO_fot_amerik2_21-07.jpg")}
             action={() =>
               navigation.navigate("Menu", {
                 items: [
@@ -289,17 +290,17 @@ const RestaurantsScreen = ({ navigation }) => {
                       {
                         title: "Big Foot",
                         price: 4.55,
-                        img: require("./images/big-foot.jpg"),
+                        img: require("./assets/big-foot.jpg"),
                       },
                       {
                         title: "Hamburger XBacon",
                         price: 2.69,
-                        img: require("./images/hamburger-xbacon.jpg"),
+                        img: require("./assets/hamburger-xbacon.jpg"),
                       },
                       {
                         title: "Caramelized Onion",
                         price: 2.75,
-                        img: require("./images/caramelized-onion.jpg"),
+                        img: require("./assets/caramelized-onion.jpg"),
                         info: true,
                       },
                     ],
@@ -311,17 +312,17 @@ const RestaurantsScreen = ({ navigation }) => {
                         title: "Flat white",
                         outOfStock: true,
                         price: 1.75,
-                        img: require("./images/flat-white.jpg"),
+                        img: require("./assets/flat-white.jpg"),
                       },
                       {
                         title: "Latte",
                         price: 2.55,
-                        img: require("./images/latte.jpg"),
+                        img: require("./assets/latte.jpg"),
                       },
                       {
                         title: "Caffè Americano",
                         price: 3.05,
-                        img: require("./images/americano.jpg"),
+                        img: require("./assets/americano.jpg"),
                         info: true,
                       },
                     ],
@@ -336,7 +337,7 @@ const RestaurantsScreen = ({ navigation }) => {
             eta="20+"
             stars="★★★☆☆"
             distance={4.5}
-            imgUri={require("./images/waffle.jpg")}
+            imgUri={require("./assets/waffle.jpg")}
             action={() =>
               navigation.navigate("Menu", {
                 items: [
@@ -346,17 +347,17 @@ const RestaurantsScreen = ({ navigation }) => {
                       {
                         title: "Waffle Fruit",
                         price: 5.49,
-                        img: require("./images/waffle-fruit.jpg"),
+                        img: require("./assets/waffle-fruit.jpg"),
                       },
                       {
                         title: "Waffle Chocolate",
                         price: 5.55,
-                        img: require("./images/waffle-chocolate.jpg"),
+                        img: require("./assets/waffle-chocolate.jpg"),
                       },
                       {
                         title: "Belgian Waffle",
                         price: 6.05,
-                        img: require("./images/belgian-waffle.jpg"),
+                        img: require("./assets/belgian-waffle.jpg"),
                         outOfStock: true,
                       },
                     ],
@@ -367,18 +368,18 @@ const RestaurantsScreen = ({ navigation }) => {
                       {
                         title: "Flat white",
                         price: 1.65,
-                        img: require("./images/flat-white.jpg"),
+                        img: require("./assets/flat-white.jpg"),
                         info: true,
                       },
                       {
                         title: "Latte",
                         price: 1.99,
-                        img: require("./images/latte.jpg"),
+                        img: require("./assets/latte.jpg"),
                       },
                       {
                         title: "Caffè Americano",
                         price: 2.09,
-                        img: require("./images/americano.jpg"),
+                        img: require("./assets/americano.jpg"),
                       },
                     ],
                   },
