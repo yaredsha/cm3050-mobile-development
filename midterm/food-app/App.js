@@ -219,7 +219,7 @@ const RestaurantsScreen = ({ navigation }) => {
             title="Joe's Gelato"
             tagline="Desert, Ice cream, £££"
             eta="10-30"
-            stars="★★★★"
+            stars="★★★★☆"
             distance={1.5}
             imgUri={require("./images/affogatomainimage_td8k5c.jpg")}
             action={() =>
@@ -277,7 +277,7 @@ const RestaurantsScreen = ({ navigation }) => {
             title="Joe's Diner"
             tagline="American, Burgers, ££"
             eta="50+"
-            stars="★★★"
+            stars="★★★☆☆"
             distance={3}
             imgUri={require("./images/SEO_fot_amerik2_21-07.jpg")}
             action={() =>
@@ -334,7 +334,7 @@ const RestaurantsScreen = ({ navigation }) => {
             title="Joe's Waffle"
             tagline="Waffle, Muffins, ££"
             eta="20+"
-            stars="★★★★★"
+            stars="★★★☆☆"
             distance={4.5}
             imgUri={require("./images/waffle.jpg")}
             action={() =>
