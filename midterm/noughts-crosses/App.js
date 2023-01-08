@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
   },
 
   saveArea: {
-    margin: 30
+    margin: 30,
   },
 
   row: {
@@ -64,19 +64,34 @@ const styles = StyleSheet.create({
   box: {
     flex: 1,
     alignItems: "center",
+    backgroundColor: "#E8F5FF",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 3,
+      height: 5,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
 
   text: {
+    color: "#B5D0E2",
     fontSize: 100,
     fontWeight: "500",
     lineHeight: 100,
+    textShadowColor: "rgba(0, 0, 0, 0.5)",
+    textShadowOffset: { width: 0, height: 5 },
+    textShadowRadius: 7,
   },
 
   borderRight: {
     borderRightWidth: 6,
+    borderRightColor: "#D5E1EA",
   },
 
   borderBottom: {
     borderBottomWidth: 6,
+    borderBottomColor: "#D5E1EA",
   },
 });
