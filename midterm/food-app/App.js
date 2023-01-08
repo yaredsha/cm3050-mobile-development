@@ -132,19 +132,19 @@ const MenuScreen = ({ route }) => {
                     cellStyle="RightDetail"
                     title={content.title}
                     isDisabled={content.outOfStock}
-                    detail={content.outOfStock == true ? "Out of Stock" : ""}
+                    accessory={content.info == true ? "DetailDisclosure" : ""}
+                    detail={
+                      content.info == true
+                        ? ""
+                        : content.outOfStock == true
+                        ? "Out of Stock"
+                        : "£" + content.price
+                    }
                     onPress={() =>
                       Alert.alert(
                         content.title,
                         "'" + content.title + "' added to cart"
                       )
-                    }
-                    accessory={
-                      content.info == true
-                        ? "DetailDisclosure"
-                        : content.disclosure == true
-                        ? "DisclosureIndicator"
-                        : ""
                     }
                     image={
                       content.outOfStock == true ? (
@@ -210,17 +210,17 @@ const RestaurantsScreen = ({ navigation }) => {
                   {
                     title: "Gelato",
                     contents: [
-                      { title: "Vanilla", info: true },
-                      { title: "Chocolate", outOfStock: true },
-                      { title: "Mint", disclosure: true },
+                      { title: "Vanilla", info: true, price: 3.55 },
+                      { title: "Chocolate", price: 3.69 },
+                      { title: "Mint", price: 4.65 },
                     ],
                   },
                   {
                     title: "Coffee",
                     contents: [
-                      { title: "Flat white", outOfStock: true },
-                      { title: "Latte" },
-                      { title: "Caffè Americano", info: true },
+                      { title: "Flat white", outOfStock: true, price: 1.59 },
+                      { title: "Latte", price: 2.05 },
+                      { title: "Caffè Americano", info: true, price: 3.05 },
                     ],
                   },
                 ],
@@ -240,17 +240,17 @@ const RestaurantsScreen = ({ navigation }) => {
                   {
                     title: "Burger",
                     contents: [
-                      { title: "Big Mac" },
-                      { title: "Hamburger" },
-                      { title: "Cheeseburger" },
+                      { title: "Big Foot", price: 4.55 },
+                      { title: "Hamburger XBacon", price: 2.69 },
+                      { title: "Caramelized Onion", price: 2.75, info: true },
                     ],
                   },
                   {
                     title: "Coffee",
                     contents: [
-                      { title: "Flat white" },
-                      { title: "Latte" },
-                      { title: "Caffè Americano" },
+                      { title: "Flat white", outOfStock: true, price: 1.75 },
+                      { title: "Latte", price: 2.55 },
+                      { title: "Caffè Americano", price: 3.05, info: true },
                     ],
                   },
                 ],
@@ -269,17 +269,39 @@ const RestaurantsScreen = ({ navigation }) => {
                   {
                     title: "Waffle",
                     contents: [
-                      { title: "Creme Waffle" },
-                      { title: "Waffle Chocolate" },
-                      { title: "Belgian Waffle" },
+                      {
+                        title: "Creme Waffle",
+                        price: 5.4,
+                        info: true,
+                      },
+                      {
+                        title: "Waffle Chocolate",
+                        price: 5.55,
+                      },
+                      {
+                        title: "Belgian Waffle",
+                        price: 6.0,
+                        outOfStock: true,
+                      },
                     ],
                   },
                   {
                     title: "Coffee",
                     contents: [
-                      { title: "Flat white" },
-                      { title: "Latte" },
-                      { title: "Caffè Americano" },
+                      {
+                        title: "Flat white",
+                        price: 1.65,
+                        info: true,
+                      },
+                      {
+                        title: "Latte",
+                        price: 1.9,
+                      },
+                      {
+                        title: "Caffè Americano",
+                        outOfStock: true,
+                        price: 2.0,
+                      },
                     ],
                   },
                 ],
