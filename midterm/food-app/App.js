@@ -43,6 +43,23 @@ const HomeScreenCell = (props) => {
               imageStyle={{ borderRadius: 6 }}
               source={props.imgUri}
             ></ImageBackground>
+            <View
+              style={{
+                position: "absolute",
+                bottom: 10,
+                left: 10,
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: "#AFAFAF",
+                opacity: 0.7,
+                padding: 4,
+                borderRadius: 6,
+              }}
+            >
+              <Text style={{ color: "#000", fontWeight: "bold", fontSize: 12 }}>
+                📍 {props.distance}km
+              </Text>
+            </View>
 
             <View
               style={{
@@ -153,14 +170,14 @@ const MenuScreen = ({ route }) => {
                             borderRadius: 5,
                             opacity: 0.5,
                           }}
-                          source={require("./images/affogatomainimage_td8k5c.jpg")}
+                          source={content.img}
                         />
                       ) : (
                         <Image
                           style={{
                             borderRadius: 5,
                           }}
-                          source={require("./images/affogatomainimage_td8k5c.jpg")}
+                          source={content.img}
                         />
                       )
                     }
@@ -203,6 +220,7 @@ const RestaurantsScreen = ({ navigation }) => {
             tagline="Desert, Ice cream, £££"
             eta="10-30"
             stars="★★★★"
+            distance={1.5}
             imgUri={require("./images/affogatomainimage_td8k5c.jpg")}
             action={() =>
               navigation.navigate("Menu", {
@@ -210,17 +228,44 @@ const RestaurantsScreen = ({ navigation }) => {
                   {
                     title: "Gelato",
                     contents: [
-                      { title: "Vanilla", info: true, price: 3.55 },
-                      { title: "Chocolate", price: 3.69 },
-                      { title: "Mint", price: 4.65 },
+                      {
+                        title: "Vanilla",
+                        info: true,
+                        price: 3.55,
+                        img: require("./images/vanilla.jpg"),
+                      },
+                      {
+                        title: "Chocolate",
+                        price: 3.69,
+                        img: require("./images/chocolate.jpg"),
+                      },
+                      {
+                        title: "Mint",
+                        price: 4.65,
+                        img: require("./images/mint.jpg"),
+                      },
                     ],
                   },
                   {
                     title: "Coffee",
                     contents: [
-                      { title: "Flat white", outOfStock: true, price: 1.59 },
-                      { title: "Latte", price: 2.05 },
-                      { title: "Caffè Americano", info: true, price: 3.05 },
+                      {
+                        title: "Flat white",
+                        outOfStock: true,
+                        price: 1.59,
+                        img: require("./images/flat-white.jpg"),
+                      },
+                      {
+                        title: "Latte",
+                        price: 2.05,
+                        img: require("./images/latte.jpg"),
+                      },
+                      {
+                        title: "Caffè Americano",
+                        info: true,
+                        price: 3.05,
+                        img: require("./images/americano.jpg"),
+                      },
                     ],
                   },
                 ],
@@ -233,6 +278,7 @@ const RestaurantsScreen = ({ navigation }) => {
             tagline="American, Burgers, ££"
             eta="50+"
             stars="★★★"
+            distance={3}
             imgUri={require("./images/SEO_fot_amerik2_21-07.jpg")}
             action={() =>
               navigation.navigate("Menu", {
@@ -240,17 +286,44 @@ const RestaurantsScreen = ({ navigation }) => {
                   {
                     title: "Burger",
                     contents: [
-                      { title: "Big Foot", price: 4.55 },
-                      { title: "Hamburger XBacon", price: 2.69 },
-                      { title: "Caramelized Onion", price: 2.75, info: true },
+                      {
+                        title: "Big Foot",
+                        price: 4.55,
+                        img: require("./images/big-foot.jpg"),
+                      },
+                      {
+                        title: "Hamburger XBacon",
+                        price: 2.69,
+                        img: require("./images/hamburger-xbacon.jpg"),
+                      },
+                      {
+                        title: "Caramelized Onion",
+                        price: 2.75,
+                        img: require("./images/caramelized-onion.jpg"),
+                        info: true,
+                      },
                     ],
                   },
                   {
                     title: "Coffee",
                     contents: [
-                      { title: "Flat white", outOfStock: true, price: 1.75 },
-                      { title: "Latte", price: 2.55 },
-                      { title: "Caffè Americano", price: 3.05, info: true },
+                      {
+                        title: "Flat white",
+                        outOfStock: true,
+                        price: 1.75,
+                        img: require("./images/flat-white.jpg"),
+                      },
+                      {
+                        title: "Latte",
+                        price: 2.55,
+                        img: require("./images/latte.jpg"),
+                      },
+                      {
+                        title: "Caffè Americano",
+                        price: 3.05,
+                        img: require("./images/americano.jpg"),
+                        info: true,
+                      },
                     ],
                   },
                 ],
@@ -262,6 +335,7 @@ const RestaurantsScreen = ({ navigation }) => {
             tagline="Waffle, Muffins, ££"
             eta="20+"
             stars="★★★★★"
+            distance={4.5}
             imgUri={require("./images/waffle.jpg")}
             action={() =>
               navigation.navigate("Menu", {
@@ -270,17 +344,19 @@ const RestaurantsScreen = ({ navigation }) => {
                     title: "Waffle",
                     contents: [
                       {
-                        title: "Creme Waffle",
-                        price: 5.4,
-                        info: true,
+                        title: "Waffle Fruit",
+                        price: 5.49,
+                        img: require("./images/waffle-fruit.jpg"),
                       },
                       {
                         title: "Waffle Chocolate",
                         price: 5.55,
+                        img: require("./images/waffle-chocolate.jpg"),
                       },
                       {
                         title: "Belgian Waffle",
-                        price: 6.0,
+                        price: 6.05,
+                        img: require("./images/belgian-waffle.jpg"),
                         outOfStock: true,
                       },
                     ],
@@ -291,16 +367,18 @@ const RestaurantsScreen = ({ navigation }) => {
                       {
                         title: "Flat white",
                         price: 1.65,
+                        img: require("./images/flat-white.jpg"),
                         info: true,
                       },
                       {
                         title: "Latte",
-                        price: 1.9,
+                        price: 1.99,
+                        img: require("./images/latte.jpg"),
                       },
                       {
                         title: "Caffè Americano",
-                        outOfStock: true,
-                        price: 2.0,
+                        price: 2.09,
+                        img: require("./images/americano.jpg"),
                       },
                     ],
                   },
