@@ -1,16 +1,56 @@
+import React, { useState } from "react";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, ScrollView, Image, Alert } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  Image,
+  Alert,
+  Button,
+} from "react-native";
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { Cell, Section, TableView } from "react-native-tableview-simple";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 import cars from "./Cars";
 
 const Tab = createBottomTabNavigator();
 
 const Rent = ({ route }) => {
+  const [date, setDate] = useState(new Date(1598051730000));
+  const [mode, setMode] = useState("date");
+  const [show, setShow] = useState(true);
+
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate;
+    //setShow(false);
+    setDate(currentDate);
+  };
+
+  const showMode = (currentMode) => {
+    if (Platform.OS === "android") {
+      setShow(false);
+      // for iOS, add a button that closes the picker
+    }
+    setMode(currentMode);
+  };
+
+  const showDatepicker = () => {
+    showMode("date");
+  };
+
+  const showTimepicker = () => {
+    showMode("time");
+  };
+
+  const showDateTimepicker = () => {
+    showMode("datetime");
+  };
+
   return (
     <View>
       <Text>Rent: {cars[0].brand}</Text>
@@ -26,6 +66,23 @@ const Rent = ({ route }) => {
         }}
         source={require("./assets/car.jpg")}
       />
+
+      <Button onPress={showDatepicker} title="Show date picker!" />
+      <Button onPress={showTimepicker} title="Show time picker!" />
+      <Button
+        onPress={showDateTimepicker}
+        title="Show date and time picker! (iOS only)"
+      />
+      <Text>selected: {date.toLocaleString()}</Text>
+      {show && (
+        <DateTimePicker
+          testID="dateTimePicker"
+          value={date}
+          mode={mode}
+          is24Hour={true}
+          onChange={onChange}
+        />
+      )}
     </View>
   );
 };
