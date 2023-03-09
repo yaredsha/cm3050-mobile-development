@@ -1,9 +1,10 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, ScrollView, Image, Alert } from "react-native";
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { Cell, Section, TableView } from "react-native-tableview-simple";
 
 const Tab = createBottomTabNavigator();
 
@@ -23,11 +24,43 @@ const Bookings = ({ route }) => {
   );
 };
 
-const Profile = ({ route }) => {
+const ProfileOld = ({ route }) => {
   return (
     <View>
       <Text>Profile</Text>
     </View>
+  );
+};
+
+const Profile = ({ route }) => {
+  return (
+    <ScrollView style={styles.scrollView}>
+      <TableView>
+        <Section key="sec_1" header="Header" separatorTintColor="#ccc">
+          <Cell
+            backgroundColor="#fff"
+            titleTextColor="#000"
+            key="cell_1"
+            cellStyle="RightDetail"
+            title="Title"
+            isDisabled={false}
+            accessory="accessory"
+            detail="detail"
+            onPress={() => Alert.alert("clicked")}
+            image={
+              <Image
+                style={{
+                  borderRadius: 5,
+                  opacity: 1,
+                }}
+                source={require("./assets/waffle-fruit.jpg")}
+              />
+            }
+          />
+        </Section>
+      </TableView>
+      <StatusBar />
+    </ScrollView>
   );
 };
 
@@ -92,5 +125,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
+  },
+
+  scrollView: {
+    flex: 1,
+    height: "100%",
   },
 });
