@@ -6,12 +6,26 @@ import { NavigationContainer } from "@react-navigation/native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { Cell, Section, TableView } from "react-native-tableview-simple";
 
+import cars from "./Cars";
+
 const Tab = createBottomTabNavigator();
 
 const Rent = ({ route }) => {
   return (
     <View>
-      <Text>Rent</Text>
+      <Text>Rent: {cars[0].brand}</Text>
+      <Image
+        style={{
+          borderRadius: 5,
+          opacity: 1,
+          width: "100%",
+          // Without height undefined it won't work
+          height: undefined,
+          // figure out your image aspect ratio
+          aspectRatio: 135 / 76,
+        }}
+        source={require("./assets/car.jpg")}
+      />
     </View>
   );
 };
