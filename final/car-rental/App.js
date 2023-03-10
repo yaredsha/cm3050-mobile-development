@@ -64,7 +64,7 @@ const HomeScreenCell = (props) => {
 const RentalScreen = ({ route, navigation }) => {
   return (
     <ScrollView
-      style={{ backgroundColor: "#131313" }}
+      style={{ backgroundColor: "#2D2D2D" }}
 
       //style={{ backgroundColor: "#121212" }}
       //style={styles.scrollView}
@@ -190,7 +190,7 @@ const Profile = ({ route }) => {
         <Section
           key="sec_1"
           header="Header"
-          //separatorTintColor="#131313"
+          //separatorTintColor="#2D2D2D"
         >
           <Cell
             //backgroundColor="#fff"
