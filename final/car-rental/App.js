@@ -5,18 +5,105 @@ import {
   Text,
   View,
   ScrollView,
+  ImageBackground,
   Image,
   Alert,
   Button,
+  Dimensions,
 } from "react-native";
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, DarkTheme } from "@react-navigation/native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { Cell, Section, TableView } from "react-native-tableview-simple";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
-import cars from "./Cars";
+import data from "./Data";
+
+const cellHeight = Dimensions.get("window").height / 4.6;
+
+const HomeScreenCell = (props) => {
+  return (
+    <Cell
+      backgroundColor="transparent"
+      cellStyle="Basic"
+      hideSeparator={true}
+      //highlightUnderlayColor="#ccc"
+      onPress={props.action}
+      cellContentView={
+        <View
+          style={{
+            flex: 1,
+            marginBottom: 30,
+            paddingTop: 20,
+            //borderColor: "#fff",
+            borderWidth: 1,
+            borderRadius: 10,
+          }}
+        >
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
+            <Text>{props.model}</Text>
+            <Text>{props.automatic ? "Automatic" : "Manual"}</Text>
+            <Text>{props.electric ? "Electric" : "Fuel"}</Text>
+            <Text>Seats {props.seats}</Text>
+          </View>
+
+          <ImageBackground
+            style={{ height: cellHeight }}
+            imageStyle={{ resizeMode: "cover" }}
+            source={props.img}
+          ></ImageBackground>
+        </View>
+      }
+    />
+  );
+};
+
+const RentalScreen = ({ route, navigation }) => {
+  return (
+    <ScrollView
+      style={{ backgroundColor: "#131313" }}
+
+      //style={{ backgroundColor: "#121212" }}
+      //style={styles.scrollView}
+    >
+      <TableView
+        appearance="dark" //style={styles.restaurantsScreenTableView}
+      >
+        <Section
+          hideSeparator={true}
+          //style={styles.restaurantsScreenSection}
+          //name=""
+          //hideSeparator={route.params.sectionHideSeparator}
+          //separatorTintColor={route.params.sectionSeparatorTintColor}
+        >
+          {data.cars.map((car, i) => {
+            return (
+              <HomeScreenCell
+                key={"hs_" + i}
+                id={car.id}
+                model={car.model}
+                automatic={car.automatic}
+                electric={car.electric}
+                category={car.category}
+                seats={car.seats}
+                img={car.img}
+                action={() =>
+                  navigation.navigate("Bookings", {
+                    car: car,
+                  })
+                }
+              ></HomeScreenCell>
+            );
+          })}
+        </Section>
+      </TableView>
+      <StatusBar />
+    </ScrollView>
+  );
+};
 
 const Tab = createBottomTabNavigator();
 
@@ -53,7 +140,7 @@ const Rent = ({ route }) => {
 
   return (
     <View>
-      <Text>Rent: {cars[0].brand}</Text>
+      <Text>Rent</Text>
       <Image
         style={{
           borderRadius: 5,
@@ -96,21 +183,17 @@ const Bookings = ({ route }) => {
   );
 };
 
-const ProfileOld = ({ route }) => {
-  return (
-    <View>
-      <Text>Profile</Text>
-    </View>
-  );
-};
-
 const Profile = ({ route }) => {
   return (
     <ScrollView style={styles.scrollView}>
-      <TableView>
-        <Section key="sec_1" header="Header" separatorTintColor="#ccc">
+      <TableView appearance="dark">
+        <Section
+          key="sec_1"
+          header="Header"
+          //separatorTintColor="#131313"
+        >
           <Cell
-            backgroundColor="#fff"
+            //backgroundColor="#fff"
             titleTextColor="#000"
             key="cell_1"
             cellStyle="RightDetail"
@@ -139,16 +222,18 @@ const Profile = ({ route }) => {
 const MyTabs = () => {
   return (
     <Tab.Navigator
-      initialRouteName="Rent"
+      initialRouteName="Rental"
       screenOptions={{
         tabBarActiveTintColor: "#e91e63",
+        //tabBarActiveBackgroundColor: "#121212",
+        //tabBarInactiveBackgroundColor: "#121212",
       }}
     >
       <Tab.Screen
-        name="Rent"
-        component={Rent}
+        name="Rental"
+        component={RentalScreen}
         options={{
-          tabBarLabel: "Rent",
+          tabBarLabel: "Rental",
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="car-key" color={color} size={size} />
           ),
@@ -185,7 +270,7 @@ const MyTabs = () => {
 
 export default function App() {
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={DarkTheme}>
       <MyTabs />
     </NavigationContainer>
   );
