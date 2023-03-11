@@ -241,4 +241,28 @@ export default data = {
       price: 99.97,
     },
   ],
+  locations: [
+    {
+      name: "London Park Royal",
+      address: "101-103 Brentfield Rd., London NW10 8LD, United Kingdom",
+    },
+    {
+      name: "London Park Lane",
+      address: "22 Park Ln, London W1K 1BE, United Kingdom",
+    },
+    {
+      name: "London Heathrow Airport T5",
+      address: "Terminal 5, Sofitel London Heathrow T5, London TW6 2GD, United",
+    },
+    {
+      name: "London St. Pancras",
+      address:
+        "Pancras Rd/Eurostar, Pancras Rd, London N1C 4QP, United Kingdom",
+    },
+    {
+      name: "London Shepherd's Bush",
+      address:
+        "Shopping Centre, 16 Shepherds Bush Green West12, London W12 8PH, United Kingdom",
+    },
+  ],
 };

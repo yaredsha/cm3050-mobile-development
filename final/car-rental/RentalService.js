@@ -43,7 +43,17 @@ const getCarsByFilter = ({
   return result;
 };
 
+/**
+ * Returns a list of all locations
+ *
+ * @returns The list of locations
+ */
+const getLocations = () => {
+  return data.locations;
+};
+
 module.exports = {
   getAllCars,
   getCarsByFilter,
+  getLocations,
 };

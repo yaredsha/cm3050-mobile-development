@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, Component } from "react";
 import { StatusBar } from "expo-status-bar";
 import {
   StyleSheet,
@@ -18,100 +18,30 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { Cell, Section, TableView } from "react-native-tableview-simple";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
-import data from "./Data";
-import { saveProfile, getProfile, deleteProfile } from "./Profile";
+import RentalComponent from "./RentalComponent";
+
+import { saveProfile, getProfile, deleteProfile } from "./ProfileService";
+import { getAllCars, getCarsByFilter, getLocations } from "./RentalService";
 import {
   getBookings,
   saveBooking,
   deleteBooking,
   deleteAllBookings,
-} from "./Booking";
-
-const cellHeight = Dimensions.get("window").height / 4.6;
-
-const HomeScreenCell = (props) => {
-  return (
-    <Cell
-      backgroundColor="transparent"
-      cellStyle="Basic"
-      hideSeparator={true}
-      highlightUnderlayColor="#131313"
-      onPress={props.action}
-      cellContentView={
-        <View
-          style={{
-            flex: 1,
-            marginBottom: 30,
-            paddingTop: 20,
-            borderWidth: 1,
-            borderRadius: 10,
-          }}
-        >
-          <View
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
-          >
-            <Text>{props.model}</Text>
-            <Text>{props.automatic ? "Automatic" : "Manual"}</Text>
-            <Text>{props.electric ? "Electric" : "Fuel"}</Text>
-            <Text>Seats {props.seats}</Text>
-          </View>
-
-          <ImageBackground
-            style={{ height: cellHeight }}
-            imageStyle={{ resizeMode: "cover" }}
-            source={props.img}
-          ></ImageBackground>
-        </View>
-      }
-    />
-  );
-};
-
-const RentalScreen = ({ route, navigation }) => {
-  return (
-    <ScrollView
-      style={{ backgroundColor: "#2D2D2D" }}
-
-      //style={{ backgroundColor: "#121212" }}
-      //style={styles.scrollView}
-    >
-      <TableView
-        appearance="dark" //style={styles.restaurantsScreenTableView}
-      >
-        <Section
-          hideSeparator={true}
-          //style={styles.restaurantsScreenSection}
-          //name=""
-          //hideSeparator={route.params.sectionHideSeparator}
-          //separatorTintColor={route.params.sectionSeparatorTintColor}
-        >
-          {data.cars.map((car, i) => {
-            return (
-              <HomeScreenCell
-                key={"hs_" + i}
-                id={car.id}
-                model={car.model}
-                automatic={car.automatic}
-                electric={car.electric}
-                category={car.category}
-                seats={car.seats}
-                img={car.img}
-                action={() =>
-                  navigation.navigate("Bookings", {
-                    car: car,
-                  })
-                }
-              ></HomeScreenCell>
-            );
-          })}
-        </Section>
-      </TableView>
-      <StatusBar />
-    </ScrollView>
-  );
-};
+} from "./BookingService";
 
 const Tab = createBottomTabNavigator();
+
+const bookingPressed = (booking) => {
+  Alert.alert("bookingPressed", booking);
+};
+
+const automaticPressed = (isAutomatic) => {
+  Alert.alert("automaticPressed", isAutomatic);
+};
+
+const electricPressed = (isElectric) => {
+  Alert.alert("electricPressed", isElectric);
+};
 
 const Rent = ({ route }) => {
   const [date, setDate] = useState(new Date(1598051730000));
@@ -230,14 +160,18 @@ const MyTabs = () => {
     <Tab.Navigator
       initialRouteName="Rental"
       screenOptions={{
-        tabBarActiveTintColor: "#e91e63",
-        //tabBarActiveBackgroundColor: "#121212",
-        //tabBarInactiveBackgroundColor: "#121212",
+        tabBarActiveTintColor: "#fff",
       }}
     >
       <Tab.Screen
         name="Rental"
-        component={RentalScreen}
+        children={() => (
+          <RentalComponent
+            onBookingPressed={bookingPressed}
+            onAutomaticPressed={automaticPressed}
+            onElectricPressed={electricPressed}
+          />
+        )}
         options={{
           tabBarLabel: "Rental",
           tabBarIcon: ({ color, size }) => (
@@ -274,12 +208,14 @@ const MyTabs = () => {
   );
 };
 
-export default function App() {
-  return (
-    <NavigationContainer theme={DarkTheme}>
-      <MyTabs />
-    </NavigationContainer>
-  );
+export default class App extends Component {
+  render() {
+    return (
+      <NavigationContainer theme={DarkTheme}>
+        <MyTabs />
+      </NavigationContainer>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
