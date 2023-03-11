@@ -18,7 +18,7 @@ const loadProfile = async () => {
   return await SecureStore.getItemAsync(profileKey);
 };
 
-export default {
+module.exports = {
   saveProfile,
   loadProfile,
 };

@@ -156,7 +156,7 @@ export default data = {
       img: require("./assets/Renault_Megane_E-Tech.jpg"),
       automatic: true,
       electric: true,
-      category: 23,
+      category: 3,
       seats: 5,
       price: 180.99,
     },

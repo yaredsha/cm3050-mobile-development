@@ -28,7 +28,7 @@ const HomeScreenCell = (props) => {
       backgroundColor="transparent"
       cellStyle="Basic"
       hideSeparator={true}
-      //highlightUnderlayColor="#ccc"
+      highlightUnderlayColor="#131313"
       onPress={props.action}
       cellContentView={
         <View
@@ -36,7 +36,6 @@ const HomeScreenCell = (props) => {
             flex: 1,
             marginBottom: 30,
             paddingTop: 20,
-            //borderColor: "#fff",
             borderWidth: 1,
             borderRadius: 10,
           }}
@@ -194,7 +193,7 @@ const Profile = ({ route }) => {
         >
           <Cell
             //backgroundColor="#fff"
-            titleTextColor="#000"
+            //titleTextColor="#000"
             key="cell_1"
             cellStyle="RightDetail"
             title="Title"
