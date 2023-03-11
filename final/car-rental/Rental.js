@@ -1,6 +1,7 @@
 import data from "./Data";
 
 /**
+ * Returns a list of all cars
  *
  * @returns The list of cars
  */
@@ -8,6 +9,13 @@ const getAllCars = () => {
   return data.cars;
 };
 
+/**
+ * Returns a list of cars that match the filter criteria.
+ * Note: an AND operator is used by more than one criterion
+ *
+ * @param {Object} filter A filter object containing filter selections
+ * @returns A list of cars that match the filter criteria
+ */
 const getCarsByFilter = ({
   automatic = false,
   electric = false,

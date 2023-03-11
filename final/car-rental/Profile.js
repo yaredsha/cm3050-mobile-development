@@ -1,24 +1,35 @@
 import * as SecureStore from "expo-secure-store";
 
-const profileKey = "@profile_key";
+const profileKey = "profile_key";
 
 /**
+ * Saves a profile object to the data storage
  *
- * @param {Object} profile The profile object to save to secure store
+ * @param {Object} profile The profile object to be saved
  */
 const saveProfile = async (profile) => {
-  return await SecureStore.setItemAsync(profileKey, JSON.stringify(profile));
+  await SecureStore.setItemAsync(profileKey, JSON.stringify(profile));
 };
 
 /**
+ * Returns the profile from the data storage
  *
- * @returns The profile from the secure store
+ * @returns A profile object
  */
-const loadProfile = async () => {
-  return await SecureStore.getItemAsync(profileKey);
+const getProfile = async () => {
+  const value = await SecureStore.getItemAsync(profileKey);
+  return value ? JSON.parse(value) : value;
+};
+
+/**
+ * Deletes the profile from the data storage
+ */
+const deleteProfile = async () => {
+  await SecureStore.deleteItemAsync(profileKey);
 };
 
 module.exports = {
   saveProfile,
-  loadProfile,
+  getProfile,
+  deleteProfile,
 };

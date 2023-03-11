@@ -1,6 +1,6 @@
 import { getAllCars, getCarsByFilter } from "./Rental";
 
-it("loads all cars", () => {
+it("gets all cars", () => {
   const cars = getAllCars();
   expect(24).toBe(cars.length);
 });
@@ -15,7 +15,7 @@ it("gets automatic and electric cars", () => {
   expect(7).toBe(cars.length);
 });
 
-it("gets large automatic and electric cars with 5 seats", () => {
+it("gets large, automatic and electric cars with 5 seats", () => {
   const cars = getCarsByFilter({
     automatic: true,
     electric: true,

@@ -19,6 +19,13 @@ import { Cell, Section, TableView } from "react-native-tableview-simple";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
 import data from "./Data";
+import { saveProfile, getProfile, deleteProfile } from "./Profile";
+import {
+  getBookings,
+  saveBooking,
+  deleteBooking,
+  deleteAllBookings,
+} from "./Booking";
 
 const cellHeight = Dimensions.get("window").height / 4.6;
 
