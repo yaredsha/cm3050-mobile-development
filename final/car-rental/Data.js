@@ -8,8 +8,8 @@ export default data = {
       electric: true,
       category: 2,
       seats: 5,
+      price: 128.98,
     },
-
     {
       id: 2,
       model: "Audi A4 B9",
@@ -18,6 +18,7 @@ export default data = {
       electric: false,
       category: 2,
       seats: 5,
+      price: 130.98,
     },
     {
       id: 3,
@@ -27,6 +28,7 @@ export default data = {
       electric: true,
       category: 3,
       seats: 5,
+      price: 155.97,
     },
     {
       id: 4,
@@ -36,6 +38,7 @@ export default data = {
       electric: false,
       category: 2,
       seats: 5,
+      price: 129.97,
     },
     {
       id: 5,
@@ -45,6 +48,7 @@ export default data = {
       electric: false,
       category: 2,
       seats: 4,
+      price: 130.98,
     },
     {
       id: 6,
@@ -54,6 +58,7 @@ export default data = {
       electric: false,
       category: 2,
       seats: 5,
+      price: 121.98,
     },
     {
       id: 7,
@@ -63,8 +68,8 @@ export default data = {
       electric: true,
       category: 3,
       seats: 5,
+      price: 156.97,
     },
-
     {
       id: 8,
       model: "BMW M235i xDrive",
@@ -73,8 +78,8 @@ export default data = {
       electric: false,
       category: 2,
       seats: 5,
+      price: 127.97,
     },
-
     {
       id: 9,
       model: "Toyota Allion",
@@ -83,6 +88,7 @@ export default data = {
       electric: false,
       category: 2,
       seats: 5,
+      price: 130.99,
     },
     {
       id: 10,
@@ -92,8 +98,8 @@ export default data = {
       electric: false,
       category: 2,
       seats: 5,
+      price: 124.97,
     },
-
     {
       id: 11,
       model: "Mercedes-Benz A 180 Progressive",
@@ -102,8 +108,8 @@ export default data = {
       electric: false,
       category: 2,
       seats: 5,
+      price: 121.97,
     },
-
     {
       id: 12,
       model: "Mercedes-Benz C257",
@@ -112,8 +118,8 @@ export default data = {
       electric: false,
       category: 2,
       seats: 5,
+      price: 129.97,
     },
-
     {
       id: 13,
       model: "Mercedes-Benz W247",
@@ -122,8 +128,8 @@ export default data = {
       electric: true,
       category: 2,
       seats: 5,
+      price: 126.99,
     },
-
     {
       id: 14,
       model: "Peugeot 508 GT",
@@ -132,8 +138,8 @@ export default data = {
       electric: false,
       category: 2,
       seats: 5,
+      price: 129.98,
     },
-
     {
       id: 15,
       model: "PRenault Kaptur 9900",
@@ -142,8 +148,8 @@ export default data = {
       electric: true,
       category: 3,
       seats: 5,
+      price: 171.97,
     },
-
     {
       id: 16,
       model: "Renault Megane E-Tech",
@@ -152,8 +158,8 @@ export default data = {
       electric: true,
       category: 23,
       seats: 5,
+      price: 180.99,
     },
-
     {
       id: 17,
       model: "Renault Megane Sedan Intens",
@@ -162,8 +168,8 @@ export default data = {
       electric: false,
       category: 2,
       seats: 5,
+      price: 128.98,
     },
-
     {
       id: 18,
       model: "Toyota Corolla Altis E210",
@@ -172,8 +178,8 @@ export default data = {
       electric: false,
       category: 2,
       seats: 5,
+      price: 120.99,
     },
-
     {
       id: 19,
       model: "Toyota GR Yaris XP21",
@@ -182,8 +188,8 @@ export default data = {
       electric: false,
       category: 1,
       seats: 5,
+      price: 97.98,
     },
-
     {
       id: 20,
       model: "Volkswagen Arteon Shooting Brake",
@@ -192,6 +198,7 @@ export default data = {
       electric: false,
       category: 2,
       seats: 5,
+      price: 125.97,
     },
     {
       id: 21,
@@ -201,6 +208,7 @@ export default data = {
       electric: false,
       category: 2,
       seats: 5,
+      price: 127.98,
     },
     {
       id: 22,
@@ -210,6 +218,7 @@ export default data = {
       electric: true,
       category: 2,
       seats: 5,
+      price: 127.98,
     },
     {
       id: 23,
@@ -219,6 +228,7 @@ export default data = {
       electric: false,
       category: 2,
       seats: 5,
+      price: 130.98,
     },
     {
       id: 24,
@@ -228,6 +238,7 @@ export default data = {
       electric: false,
       category: 1,
       seats: 5,
+      price: 99.97,
     },
   ],
 };
