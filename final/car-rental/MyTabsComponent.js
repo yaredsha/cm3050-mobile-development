@@ -116,7 +116,7 @@ class MyTabsComponent extends Component {
                 style={{ marginRight: 10 }}
                 onPress={() => this.setState({ saveProfilePressed: true })}
               >
-                <Text style={{ color: "#fff" }}>Save</Text>
+                <Text style={{ color: "#fff", fontSize: 18 }}>Save</Text>
               </TouchableOpacity>
             ),
           }}
