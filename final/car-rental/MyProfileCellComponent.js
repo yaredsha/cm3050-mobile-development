@@ -27,7 +27,9 @@ class MyProfileCellComponent extends Component {
               color="#fff"
               size={18}
             />
-            <Text style={styles.text}>{this.props.name}</Text>
+            <Text numberOfLines={1} style={styles.text}>
+              {this.props.name}
+            </Text>
           </View>
         }
         title={this.props.name}
@@ -56,8 +58,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 16,
     color: "#A7A7A9",
-    justifyContent: "flex-end",
-    textAlign: "right",
     marginLeft: 5,
+    textAlign: "left",
   },
 });

@@ -1,8 +1,7 @@
 import React, { Component } from "react";
-import { StyleSheet, View, Alert, Button } from "react-native";
+import { Text, Alert, TouchableOpacity } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { Cell, Section, TableView } from "react-native-tableview-simple";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import MyRentalComponent from "./MyRentalComponent";
@@ -113,13 +112,12 @@ class MyTabsComponent extends Component {
               />
             ),
             headerRight: () => (
-              <View style={{ flex: 1, marginRight: 10 }}>
-                <Button
-                  onPress={() => this.setState({ saveProfilePressed: true })}
-                  title="Save"
-                  color="#fff"
-                />
-              </View>
+              <TouchableOpacity
+                style={{ marginRight: 10 }}
+                onPress={() => this.setState({ saveProfilePressed: true })}
+              >
+                <Text style={{ color: "#fff" }}>Save</Text>
+              </TouchableOpacity>
             ),
           }}
         />
