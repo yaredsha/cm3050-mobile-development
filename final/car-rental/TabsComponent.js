@@ -1,6 +1,14 @@
 import React, { Component } from "react";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, ScrollView, Image, Alert } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  ScrollView,
+  Image,
+  Alert,
+} from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { Cell, Section, TableView } from "react-native-tableview-simple";
@@ -8,18 +16,11 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import RentalComponent from "./RentalComponent";
 import BookingsComponent from "./BookingsComponent";
+import ProfileComponent from "./ProfileComponent";
 
 import { getBookings, saveBooking } from "./BookingService";
 
 const Tab = createBottomTabNavigator();
-
-const Bookings = ({ route }) => {
-  return (
-    <View>
-      <Text>Bookings</Text>
-    </View>
-  );
-};
 
 const Profile = ({ route }) => {
   return (
@@ -33,13 +34,24 @@ const Profile = ({ route }) => {
           <Cell
             //backgroundColor="#fff"
             //titleTextColor="#000"
+            cellContentView={
+              <TextInput
+                style={{
+                  fontSize: 16,
+                  flex: 1,
+                  color: "#fff",
+                }}
+                placeholder="TextInput"
+                placeholderTextColor="#777777"
+              />
+            }
             key="cell_1"
             cellStyle="RightDetail"
             title="Title"
             isDisabled={false}
             accessory="accessory"
             detail="detail"
-            onPress={() => Alert.alert("clicked")}
+            //onPress={() => Alert.alert("clicked")}
             image={
               <Image
                 style={{
@@ -135,7 +147,7 @@ class TabsComponent extends Component {
         />
         <Tab.Screen
           name="Profile"
-          component={Profile}
+          component={ProfileComponent}
           options={{
             tabBarLabel: "Profile",
             tabBarIcon: ({ color, size }) => (

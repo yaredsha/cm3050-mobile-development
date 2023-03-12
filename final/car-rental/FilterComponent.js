@@ -63,19 +63,7 @@ class FilterComponent extends Component {
           <Text style={{ color: "#fff" }}>Automatic</Text>
         </View>
 
-        <View
-          style={
-            {
-              /*borderColor: "#A5A5A5",
-            borderRadius: 5,
-            borderWidth: 1,
-            padding: 5,
-            */
-            }
-          }
-        >
-          <Text style={{ color: "#A5A5A5" }}>{this.props.carsCount} found</Text>
-        </View>
+        <Text style={{ color: "#A5A5A5" }}>{this.props.carsCount} found</Text>
 
         <View
           style={{

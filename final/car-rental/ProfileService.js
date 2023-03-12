@@ -18,7 +18,7 @@ const saveProfile = async (profile) => {
  */
 const getProfile = async () => {
   const value = await SecureStore.getItemAsync(profileKey);
-  return value ? JSON.parse(value) : value;
+  return value ? JSON.parse(value) : {};
 };
 
 /**
