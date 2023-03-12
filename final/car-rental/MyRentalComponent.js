@@ -51,18 +51,22 @@ class MyRentalComponent extends Component {
     return (
       <ScrollView
         stickyHeaderIndices={[0]}
-        style={{ backgroundColor: "#121212" }}
+        style={{ backgroundColor: "#121212", flex: 1 }}
       >
         <MyFilterComponent
           onAutomaticPressed={this.automaticFilterSelected}
           onElectricPressed={this.electricFilterSelected}
           carsCount={this.state.cars.length}
         ></MyFilterComponent>
-        <TableView appearance="dark">
+        <TableView
+          appearance="dark"
+          style={{ flex: 1, justifyContent: "center" }}
+        >
           <Section hideSeparator={true} separatorTintColor={"#121212"}>
             {this.state.cars.map((car, i) => {
               return (
                 <MyRentalCellComponent
+                  style={{ backgroundColor: "red" }}
                   onBookingPressed={this.props.onBookingPressed}
                   key={"hs_" + i}
                   id={car.id}
