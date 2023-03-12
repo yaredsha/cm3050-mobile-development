@@ -7,6 +7,7 @@ import { Cell, Section, TableView } from "react-native-tableview-simple";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import RentalComponent from "./RentalComponent";
+import BookingsComponent from "./BookingsComponent";
 
 import { getBookings, saveBooking } from "./BookingService";
 
@@ -22,7 +23,7 @@ const Bookings = ({ route }) => {
 
 const Profile = ({ route }) => {
   return (
-    <ScrollView style={styles.scrollView}>
+    <ScrollView style={{ flex: 1 }}>
       <TableView appearance="dark">
         <Section
           key="sec_1"
@@ -112,7 +113,11 @@ class TabsComponent extends Component {
         />
         <Tab.Screen
           name="Bookings"
-          component={Bookings}
+          children={() => (
+            <BookingsComponent
+              onBookingDeleted={async () => await this.updateBookingsCount()}
+            />
+          )}
           options={{
             tabBarLabel: "Bookings",
             tabBarIcon: ({ color, size }) => (

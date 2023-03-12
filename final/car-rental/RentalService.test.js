@@ -1,4 +1,4 @@
-import { getAllCars, getCarsByFilter } from "./RentalService";
+import { getAllCars, getCarsByFilter, getCarsByIds } from "./RentalService";
 
 it("gets all cars", () => {
   const cars = getAllCars();
@@ -28,4 +28,9 @@ it("gets large, automatic and electric cars with 5 seats", () => {
 it("empty filter, get all cars", () => {
   const cars = getCarsByFilter();
   expect(24).toBe(cars.length);
+});
+
+it("gets a list of cars that match the given car ids", () => {
+  const cars = getCarsByIds([1, 2, 3]);
+  expect(3).toBe(cars.length);
 });

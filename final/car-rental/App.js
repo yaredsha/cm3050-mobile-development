@@ -14,7 +14,6 @@ import {
 
 import { NavigationContainer, DarkTheme } from "@react-navigation/native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { Cell, Section, TableView } from "react-native-tableview-simple";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
 import TabsComponent from "./TabsComponent";

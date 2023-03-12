@@ -44,6 +44,21 @@ const getCarsByFilter = ({
 };
 
 /**
+ * Returns a list of cars that match the given car ids.
+ *
+ * @param {Array} carIds Array of car ids that should be returned
+ * @returns A list of cars
+ */
+const getCarsByIds = (carIds) => {
+  let result = [];
+  if (carIds && carIds.length > 0) {
+    result = data.cars.filter((car) => carIds.includes(car.id));
+  }
+
+  return result;
+};
+
+/**
  * Returns a list of all locations
  *
  * @returns The list of locations
@@ -55,5 +70,6 @@ const getLocations = () => {
 module.exports = {
   getAllCars,
   getCarsByFilter,
+  getCarsByIds,
   getLocations,
 };
