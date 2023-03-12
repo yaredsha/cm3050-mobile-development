@@ -31,16 +31,11 @@ import {
 
 const Tab = createBottomTabNavigator();
 
-const bookingPressed = (booking) => {
-  Alert.alert("bookingPressed", booking);
-};
+const bookingPressed = async (booking) => {
+  await saveBooking({ carId: booking });
 
-const automaticPressed = (isAutomatic) => {
-  Alert.alert("automaticPressed", isAutomatic);
-};
-
-const electricPressed = (isElectric) => {
-  Alert.alert("electricPressed", isElectric);
+  const result = await getBookings();
+  console.log("bookings after reading: ", result);
 };
 
 const Rent = ({ route }) => {
@@ -165,13 +160,7 @@ const MyTabs = () => {
     >
       <Tab.Screen
         name="Rental"
-        children={() => (
-          <RentalComponent
-            onBookingPressed={bookingPressed}
-            onAutomaticPressed={automaticPressed}
-            onElectricPressed={electricPressed}
-          />
-        )}
+        children={() => <RentalComponent onBookingPressed={bookingPressed} />}
         options={{
           tabBarLabel: "Rental",
           tabBarIcon: ({ color, size }) => (

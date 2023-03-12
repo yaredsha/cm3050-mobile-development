@@ -72,6 +72,7 @@ class RentalComponent extends Component {
                   category={car.category}
                   seats={car.seats}
                   img={car.img}
+                  price={car.price}
                   action={() =>
                     this.props.navigation.navigate("Bookings", {
                       car: car,

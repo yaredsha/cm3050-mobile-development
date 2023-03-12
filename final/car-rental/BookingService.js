@@ -9,7 +9,8 @@ const bookingsKey = "bookings_key";
  */
 const getBookings = async () => {
   const value = await AsyncStorage.getItem(bookingsKey);
-  return value ? JSON.parse(value) : [];
+  //console.log("getbookings value: ", value);
+  return value && value !== "{}" ? JSON.parse(value) : new Array();
 };
 
 /**
@@ -20,7 +21,22 @@ const getBookings = async () => {
 const saveBooking = async (booking) => {
   const bookings = await getBookings();
   bookings.push(booking);
-  await AsyncStorage.setItem(bookingsKey, JSON.stringify(bookings));
+
+  const unique = [];
+
+  const uniqueBookings = bookings.filter((item) => {
+    const str = JSON.stringify(item);
+    if (!unique.includes(str)) {
+      unique.push(str);
+      return true;
+    }
+    return false;
+  });
+
+  // make remove duplicates
+  bookingsSet = new Set(bookings);
+
+  await AsyncStorage.setItem(bookingsKey, JSON.stringify(uniqueBookings));
 };
 
 /**

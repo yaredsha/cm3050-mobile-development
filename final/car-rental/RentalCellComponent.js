@@ -52,7 +52,7 @@ class RentalCellComponent extends Component {
                 //paddingRight: 10,
               }}
             >
-              <Text style={{ fontSize: 16, fontWeight: "bold", color: "#fff" }}>
+              <Text style={{ fontSize: 14, fontWeight: "bold", color: "#fff" }}>
                 {this.props.model}
               </Text>
               <TouchableOpacity
@@ -63,7 +63,7 @@ class RentalCellComponent extends Component {
                   //backgroundColor: "#FC4C35",
                   backgroundColor: "#7F7F7F",
                   padding: 5,
-                  paddingLeft: 10,
+                  paddingLeft: 6,
                   paddingRight: 10,
                   borderWidth: 1,
                   borderRadius: 10,
@@ -78,7 +78,7 @@ class RentalCellComponent extends Component {
                 />
                 <Text
                   style={{
-                    marginLeft: 5,
+                    marginLeft: 4,
                     color: "#2D2D2D",
                     fontSize: 16,
                     fontWeight: "bold",
@@ -92,14 +92,41 @@ class RentalCellComponent extends Component {
             <ImageBackground
               style={{
                 height: cellHeight,
+                padding: 5,
               }}
               imageStyle={{ resizeMode: "cover" }}
               source={this.props.img}
-            ></ImageBackground>
+            >
+              <View
+                style={{
+                  flex: 1,
+                  flexDirection: "column-reverse",
+                }}
+              >
+                <Text
+                  style={{
+                    color: "#fff",
+                    fontSize: 16,
+                    fontWeight: "bold",
+                    alignSelf: "flex-end",
+                    backgroundColor: "#7F7F7F",
+                    padding: 5,
+                    borderRadius: 2,
+                    borderWidth: 1,
+                    borderColor: "#BABABA",
+                    opacity: 0.7,
+                  }}
+                >
+                  £{this.props.price} /day
+                </Text>
+              </View>
+            </ImageBackground>
+
             <View
               style={{
                 flexDirection: "row",
                 justifyContent: "space-between",
+                alignItems: "center",
                 padding: 10,
                 //paddingLeft: 10,
               }}
