@@ -15,9 +15,13 @@ class BookingsComponent extends Component {
 
   /**
    * We can't use await inside a construtor.
-   * So we use await inside componentDidMount event
+   * So we use await inside componentDidUpdate event
    */
   componentDidMount = async () => {
+    await this.updateBookings();
+  };
+
+  componentDidUpdate = async () => {
     await this.updateBookings();
   };
 
@@ -29,9 +33,11 @@ class BookingsComponent extends Component {
 
   updateBookings = async () => {
     const bookings = await getBookings();
-    const carIds = bookings.map((booking) => parseInt(booking.carId));
-    const bookedCars = await getCarsByIds(carIds);
-    this.setState({ bookedCars: bookedCars });
+    if (bookings.length != this.state.bookedCars.length) {
+      const carIds = bookings.map((booking) => parseInt(booking.carId));
+      const bookedCars = await getCarsByIds(carIds);
+      this.setState({ bookedCars: bookedCars });
+    }
   };
 
   render() {

@@ -1,14 +1,13 @@
 import React, { Component } from "react";
 import { StatusBar } from "expo-status-bar";
 
-import { ScrollView, View } from "react-native";
+import { ScrollView } from "react-native";
 import { Section, TableView } from "react-native-tableview-simple";
 
 import RentalCellComponent from "./RentalCellComponent";
 import FilterComponent from "./FilterComponent";
 
-import { getAllCars, getCarsByFilter, getLocations } from "./RentalService";
-import { saveBooking } from "./BookingService";
+import { getAllCars, getCarsByFilter } from "./RentalService";
 
 class RentalComponent extends Component {
   constructor(props) {
@@ -57,6 +56,7 @@ class RentalComponent extends Component {
         <FilterComponent
           onAutomaticPressed={this.automaticFilterSelected}
           onElectricPressed={this.electricFilterSelected}
+          carsCount={this.state.cars.length}
         ></FilterComponent>
         <TableView appearance="dark">
           <Section hideSeparator={true} separatorTintColor={"#121212"}>

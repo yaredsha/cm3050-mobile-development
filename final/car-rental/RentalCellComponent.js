@@ -71,7 +71,11 @@ class RentalCellComponent extends Component {
                 }}
                 onPress={() => this.props.onBookingPressed("" + this.props.id)}
               >
-                <MaterialCommunityIcons name={"check"} color="#fff" size={18} />
+                <MaterialCommunityIcons
+                  name={"check"}
+                  color="#ff0000"
+                  size={18}
+                />
                 <Text
                   style={{
                     marginLeft: 4,

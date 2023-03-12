@@ -127,7 +127,10 @@ class TabsComponent extends Component {
                 size={size}
               />
             ),
-            tabBarBadge: this.state.bookingsCount,
+            tabBarBadge:
+              this.state.bookingsCount > 0
+                ? this.state.bookingsCount
+                : undefined,
           }}
         />
         <Tab.Screen

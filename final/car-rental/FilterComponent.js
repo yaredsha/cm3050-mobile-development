@@ -31,7 +31,7 @@ class FilterComponent extends Component {
         style={{
           flex: 1,
           flexDirection: "row",
-          justifyContent: "space-evenly",
+          justifyContent: "space-between",
           alignItems: "center",
           paddingLeft: 14,
           paddingRight: 14,
@@ -61,6 +61,20 @@ class FilterComponent extends Component {
             size={18}
           />
           <Text style={{ color: "#fff" }}>Automatic</Text>
+        </View>
+
+        <View
+          style={
+            {
+              /*borderColor: "#A5A5A5",
+            borderRadius: 5,
+            borderWidth: 1,
+            padding: 5,
+            */
+            }
+          }
+        >
+          <Text style={{ color: "#A5A5A5" }}>{this.props.carsCount} found</Text>
         </View>
 
         <View
