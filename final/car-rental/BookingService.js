@@ -9,7 +9,6 @@ const bookingsKey = "bookings_key";
  */
 const getBookings = async () => {
   const value = await AsyncStorage.getItem(bookingsKey);
-  //console.log("getbookings value: ", value);
   return value && value !== "{}" ? JSON.parse(value) : new Array();
 };
 
