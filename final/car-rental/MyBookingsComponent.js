@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import { StatusBar } from "expo-status-bar";
 
-import { StyleSheet, ScrollView, Image, Alert } from "react-native";
+import { ScrollView, Image, Alert } from "react-native";
 import { Cell, Section, TableView } from "react-native-tableview-simple";
 
-import { getBookings, deleteBooking } from "./BookingService";
-import { getCarsByIds } from "./RentalService";
+import { getBookings, deleteBooking } from "./MyBookingService";
+import { getCarsByIds } from "./MyRentalService";
 
-class BookingsComponent extends Component {
+class MyBookingsComponent extends Component {
   constructor(props) {
     super(props);
     this.state = { bookedCars: [] };
@@ -46,7 +46,6 @@ class BookingsComponent extends Component {
         <TableView appearance="dark">
           <Section
             header={this.state.bookedCars.length + " cars booked"}
-            //separatorTintColor="#ccc"
             headerTextStyle={{ fontSize: 18 }}
           >
             {this.state.bookedCars.map((car, i) => {
@@ -94,4 +93,4 @@ class BookingsComponent extends Component {
   }
 }
 
-export default BookingsComponent;
+export default MyBookingsComponent;

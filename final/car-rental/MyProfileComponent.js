@@ -1,23 +1,29 @@
 import React, { Component } from "react";
 import { StatusBar } from "expo-status-bar";
 
-import { StyleSheet, TextInput, ScrollView, Image, Alert } from "react-native";
-import { Cell, Section, TableView } from "react-native-tableview-simple";
+import { ScrollView } from "react-native";
+import { Section, TableView } from "react-native-tableview-simple";
 
-import ProfileCellComponent from "./ProfileCellComponent";
+import MyProfileCellComponent from "./MyProfileCellComponent";
 
-import { getProfile, saveProfile } from "./ProfileService";
+import { getProfile, saveProfile } from "./MyProfileService";
 
-class ProfileComponent extends Component {
+const emptyProfile = {
+  email: "",
+  name: "",
+  phoneNumber: "",
+  street: "",
+  postalCode: "",
+  city: "",
+};
+
+const emptyProfileJson = JSON.stringify(emptyProfile);
+
+class MyProfileComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: "",
-      name: "",
-      phoneNumber: "",
-      street: "",
-      postalCode: "",
-      city: "",
+      ...emptyProfile,
     };
   }
 
@@ -27,54 +33,64 @@ class ProfileComponent extends Component {
    */
   componentDidMount = async () => {
     const profile = await getProfile();
-    console.log("componentDidMount prifle: ", profile);
     if (profile && Object.keys(profile).length > 0) {
       this.setState({ ...profile });
     }
   };
 
+  /**
+   * This is just to watch the save button press event
+   */
+  componentDidUpdate = async () => {
+    if (this.props.isSaveProfilePressed === true) {
+      const profile =
+        emptyProfileJson === JSON.stringify(this.state)
+          ? {}
+          : { ...this.state };
+      await saveProfile(profile);
+    }
+  };
+
   render() {
-    //console.log("prifle: ", this.state.profile);
     return (
       <ScrollView>
         <TableView appearance="dark">
           <Section
             header={"Update your profile"}
-            //separatorTintColor="#ccc"
-            headerTextStyle={{ fontSize: 16 }}
+            headerTextStyle={{ fontSize: 18 }}
           >
-            <ProfileCellComponent
+            <MyProfileCellComponent
               name="Email"
               value={this.state.email}
               icon="email-outline"
               onChangeText={(value) => this.setState({ email: value })}
             />
-            <ProfileCellComponent
+            <MyProfileCellComponent
               name="Name"
               value={this.state.name}
               icon="account"
               onChangeText={(value) => this.setState({ name: value })}
             />
 
-            <ProfileCellComponent
+            <MyProfileCellComponent
               name="Phone number"
               value={this.state.phoneNumber}
               icon="phone"
               onChangeText={(value) => this.setState({ phoneNumber: value })}
             />
-            <ProfileCellComponent
+            <MyProfileCellComponent
               name="Street"
               value={this.state.street}
               icon="map-marker-outline"
               onChangeText={(value) => this.setState({ street: value })}
             />
-            <ProfileCellComponent
+            <MyProfileCellComponent
               name="Postal code"
               value={this.state.postalCode}
               icon="map-marker"
               onChangeText={(value) => this.setState({ postalCode: value })}
             />
-            <ProfileCellComponent
+            <MyProfileCellComponent
               name="City"
               value={this.state.city}
               icon="city"
@@ -88,4 +104,4 @@ class ProfileComponent extends Component {
   }
 }
 
-export default ProfileComponent;
+export default MyProfileComponent;

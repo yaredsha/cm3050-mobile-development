@@ -8,7 +8,9 @@ const profileKey = "profile_key";
  * @param {Object} profile The profile object to be saved
  */
 const saveProfile = async (profile) => {
-  await SecureStore.setItemAsync(profileKey, JSON.stringify(profile));
+  if (profile) {
+    await SecureStore.setItemAsync(profileKey, JSON.stringify(profile));
+  }
 };
 
 /**

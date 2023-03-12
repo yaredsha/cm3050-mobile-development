@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { StyleSheet, Text, View, Switch } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-class FilterComponent extends Component {
+class MyFilterComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -27,26 +27,8 @@ class FilterComponent extends Component {
 
   render() {
     return (
-      <View
-        style={{
-          flex: 1,
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          paddingLeft: 14,
-          paddingRight: 14,
-          paddingTop: 10,
-          paddingBottom: 10,
-          backgroundColor: "#2D2D2D",
-        }}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "flex-start",
-            alignItems: "center",
-          }}
-        >
+      <View style={styles.container}>
+        <View style={styles.automaticContainer}>
           <Switch
             trackColor={{ false: "#7F7F7F", true: "#fff" }}
             thumbColor="#2D2D2D"
@@ -88,4 +70,24 @@ class FilterComponent extends Component {
   }
 }
 
-export default FilterComponent;
+export default MyFilterComponent;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingLeft: 14,
+    paddingRight: 14,
+    paddingTop: 10,
+    paddingBottom: 10,
+    backgroundColor: "#2D2D2D",
+  },
+
+  automaticContainer: {
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center",
+  },
+});

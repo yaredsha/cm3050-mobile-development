@@ -1,4 +1,4 @@
-import { getAllCars, getCarsByFilter, getCarsByIds } from "./RentalService";
+import { getAllCars, getCarsByFilter, getCarsByIds } from "./MyRentalService";
 
 it("gets all cars", () => {
   const cars = getAllCars();

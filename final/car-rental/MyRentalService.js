@@ -1,4 +1,4 @@
-import data from "./Data";
+import data from "./MyData";
 
 /**
  * Returns a list of all cars

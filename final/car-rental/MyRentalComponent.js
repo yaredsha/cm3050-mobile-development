@@ -4,12 +4,12 @@ import { StatusBar } from "expo-status-bar";
 import { ScrollView } from "react-native";
 import { Section, TableView } from "react-native-tableview-simple";
 
-import RentalCellComponent from "./RentalCellComponent";
-import FilterComponent from "./FilterComponent";
+import MyRentalCellComponent from "./MyRentalCellComponent";
+import MyFilterComponent from "./MyFilterComponent";
 
-import { getAllCars, getCarsByFilter } from "./RentalService";
+import { getAllCars, getCarsByFilter } from "./MyRentalService";
 
-class RentalComponent extends Component {
+class MyRentalComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -53,16 +53,16 @@ class RentalComponent extends Component {
         stickyHeaderIndices={[0]}
         style={{ backgroundColor: "#121212" }}
       >
-        <FilterComponent
+        <MyFilterComponent
           onAutomaticPressed={this.automaticFilterSelected}
           onElectricPressed={this.electricFilterSelected}
           carsCount={this.state.cars.length}
-        ></FilterComponent>
+        ></MyFilterComponent>
         <TableView appearance="dark">
           <Section hideSeparator={true} separatorTintColor={"#121212"}>
             {this.state.cars.map((car, i) => {
               return (
-                <RentalCellComponent
+                <MyRentalCellComponent
                   onBookingPressed={this.props.onBookingPressed}
                   key={"hs_" + i}
                   id={car.id}
@@ -78,7 +78,7 @@ class RentalComponent extends Component {
                       car: car,
                     })
                   }
-                ></RentalCellComponent>
+                ></MyRentalCellComponent>
               );
             })}
           </Section>
@@ -89,4 +89,4 @@ class RentalComponent extends Component {
   }
 }
 
-export default RentalComponent;
+export default MyRentalComponent;

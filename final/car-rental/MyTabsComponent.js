@@ -1,79 +1,25 @@
 import React, { Component } from "react";
-import { StatusBar } from "expo-status-bar";
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-  ScrollView,
-  Image,
-  Alert,
-} from "react-native";
+import { StyleSheet, View, Alert, Button } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { Cell, Section, TableView } from "react-native-tableview-simple";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-import RentalComponent from "./RentalComponent";
-import BookingsComponent from "./BookingsComponent";
-import ProfileComponent from "./ProfileComponent";
+import MyRentalComponent from "./MyRentalComponent";
+import MyBookingsComponent from "./MyBookingsComponent";
+import MyProfileComponent from "./MyProfileComponent";
 
-import { getBookings, saveBooking } from "./BookingService";
+import { getBookings, saveBooking } from "./MyBookingService";
+import { getProfile } from "./MyProfileService";
 
 const Tab = createBottomTabNavigator();
 
-const Profile = ({ route }) => {
-  return (
-    <ScrollView style={{ flex: 1 }}>
-      <TableView appearance="dark">
-        <Section
-          key="sec_1"
-          header="Header"
-          //separatorTintColor="#2D2D2D"
-        >
-          <Cell
-            //backgroundColor="#fff"
-            //titleTextColor="#000"
-            cellContentView={
-              <TextInput
-                style={{
-                  fontSize: 16,
-                  flex: 1,
-                  color: "#fff",
-                }}
-                placeholder="TextInput"
-                placeholderTextColor="#777777"
-              />
-            }
-            key="cell_1"
-            cellStyle="RightDetail"
-            title="Title"
-            isDisabled={false}
-            accessory="accessory"
-            detail="detail"
-            //onPress={() => Alert.alert("clicked")}
-            image={
-              <Image
-                style={{
-                  borderRadius: 5,
-                  opacity: 1,
-                }}
-                source={require("./assets/waffle-fruit.jpg")}
-              />
-            }
-          />
-        </Section>
-      </TableView>
-      <StatusBar />
-    </ScrollView>
-  );
-};
-
-class TabsComponent extends Component {
+class MyTabsComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
       bookingsCount: 0,
+      saveProfilePressed: false,
     };
   }
 
@@ -86,8 +32,13 @@ class TabsComponent extends Component {
   };
 
   bookingPressed = async (booking) => {
-    await saveBooking({ carId: booking });
-    await this.updateBookingsCount();
+    const profile = await getProfile();
+    if (profile && Object.keys(profile).length > 0) {
+      await saveBooking({ carId: booking });
+      await this.updateBookingsCount();
+    } else {
+      Alert.alert("Please update your profile before booking!");
+    }
   };
 
   updateBookingsCount = async () => {
@@ -106,7 +57,7 @@ class TabsComponent extends Component {
         <Tab.Screen
           name="Rental"
           children={() => (
-            <RentalComponent
+            <MyRentalComponent
               onBookingPressed={async (value) =>
                 await this.bookingPressed(value)
               }
@@ -126,7 +77,7 @@ class TabsComponent extends Component {
         <Tab.Screen
           name="Bookings"
           children={() => (
-            <BookingsComponent
+            <MyBookingsComponent
               onBookingDeleted={async () => await this.updateBookingsCount()}
             />
           )}
@@ -147,7 +98,11 @@ class TabsComponent extends Component {
         />
         <Tab.Screen
           name="Profile"
-          component={ProfileComponent}
+          children={() => (
+            <MyProfileComponent
+              isSaveProfilePressed={this.state.saveProfilePressed}
+            />
+          )}
           options={{
             tabBarLabel: "Profile",
             tabBarIcon: ({ color, size }) => (
@@ -157,6 +112,15 @@ class TabsComponent extends Component {
                 size={size}
               />
             ),
+            headerRight: () => (
+              <View style={{ flex: 1, marginRight: 10 }}>
+                <Button
+                  onPress={() => this.setState({ saveProfilePressed: true })}
+                  title="Save"
+                  color="#fff"
+                />
+              </View>
+            ),
           }}
         />
       </Tab.Navigator>
@@ -164,4 +128,4 @@ class TabsComponent extends Component {
   }
 }
 
-export default TabsComponent;
+export default MyTabsComponent;
