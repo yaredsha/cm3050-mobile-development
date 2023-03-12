@@ -71,11 +71,7 @@ class RentalCellComponent extends Component {
                 }}
                 onPress={() => this.props.onBookingPressed("" + this.props.id)}
               >
-                <MaterialCommunityIcons
-                  name={"check"}
-                  color="#2D2D2D"
-                  size={18}
-                />
+                <MaterialCommunityIcons name={"check"} color="#fff" size={18} />
                 <Text
                   style={{
                     marginLeft: 4,
@@ -109,12 +105,12 @@ class RentalCellComponent extends Component {
                     fontSize: 16,
                     fontWeight: "bold",
                     alignSelf: "flex-end",
-                    backgroundColor: "#7F7F7F",
+                    backgroundColor: "#121212",
                     padding: 5,
                     borderRadius: 2,
                     borderWidth: 1,
                     borderColor: "#BABABA",
-                    opacity: 0.7,
+                    opacity: 0.5,
                   }}
                 >
                   £{this.props.price} /day
