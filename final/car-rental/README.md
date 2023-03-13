@@ -5,7 +5,6 @@ assets
 ## files
 App.js  
 app.json  
-assets  
 MyBookingsComponent.js  
 MyBookingService.js  
 MyData.js  
