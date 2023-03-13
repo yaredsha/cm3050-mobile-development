@@ -1,8 +1,11 @@
-# Please include the following files and folders for the app to run properly
-## folders
+## Expo Snack Link
+https://snack.expo.dev/@yaredsha/car-rental
+
+## Folders and files to include for the app to run properly
+### Folders
 assets  
 
-## files
+### Files
 App.js  
 app.json  
 MyBookingsComponent.js  
