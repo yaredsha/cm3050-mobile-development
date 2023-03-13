@@ -8,7 +8,6 @@ $ expo init --npm
 
 # Wireframes built using
 - https://www.figma.com/
-- login: google yaredsha
 
 # flow diagram built using
 - https://app.diagrams.net/
